@@ -1,0 +1,7 @@
+C:\Users\s2200853\OneDrive - Business College Helsinki\Desktop\.NET\DVD app\DVD app\bin\Debug\DVD app.exe.config
+C:\Users\s2200853\OneDrive - Business College Helsinki\Desktop\.NET\DVD app\DVD app\bin\Debug\DVD app.exe
+C:\Users\s2200853\OneDrive - Business College Helsinki\Desktop\.NET\DVD app\DVD app\bin\Debug\DVD app.pdb
+C:\Users\s2200853\OneDrive - Business College Helsinki\Desktop\.NET\DVD app\DVD app\obj\Debug\DVD app.csproj.AssemblyReference.cache
+C:\Users\s2200853\OneDrive - Business College Helsinki\Desktop\.NET\DVD app\DVD app\obj\Debug\DVD app.csproj.CoreCompileInputs.cache
+C:\Users\s2200853\OneDrive - Business College Helsinki\Desktop\.NET\DVD app\DVD app\obj\Debug\DVD app.exe
+C:\Users\s2200853\OneDrive - Business College Helsinki\Desktop\.NET\DVD app\DVD app\obj\Debug\DVD app.pdb
