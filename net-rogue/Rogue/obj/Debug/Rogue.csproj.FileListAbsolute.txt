@@ -5,3 +5,10 @@ C:\Users\s2200853\OneDrive - Business College Helsinki\Desktop\.NET\net-rogue\Ro
 C:\Users\s2200853\OneDrive - Business College Helsinki\Desktop\.NET\net-rogue\Rogue\bin\Debug\Rogue.pdb
 C:\Users\s2200853\OneDrive - Business College Helsinki\Desktop\.NET\net-rogue\Rogue\obj\Debug\Rogue.exe
 C:\Users\s2200853\OneDrive - Business College Helsinki\Desktop\.NET\net-rogue\Rogue\obj\Debug\Rogue.pdb
+C:\Users\DaW0LF\Desktop\.NET\net-rogue\Rogue\bin\Debug\Rogue.exe.config
+C:\Users\DaW0LF\Desktop\.NET\net-rogue\Rogue\bin\Debug\Rogue.exe
+C:\Users\DaW0LF\Desktop\.NET\net-rogue\Rogue\bin\Debug\Rogue.pdb
+C:\Users\DaW0LF\Desktop\.NET\net-rogue\Rogue\obj\Debug\Rogue.csproj.AssemblyReference.cache
+C:\Users\DaW0LF\Desktop\.NET\net-rogue\Rogue\obj\Debug\Rogue.csproj.CoreCompileInputs.cache
+C:\Users\DaW0LF\Desktop\.NET\net-rogue\Rogue\obj\Debug\Rogue.exe
+C:\Users\DaW0LF\Desktop\.NET\net-rogue\Rogue\obj\Debug\Rogue.pdb

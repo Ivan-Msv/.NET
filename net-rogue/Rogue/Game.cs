@@ -11,13 +11,13 @@ namespace Rogue
         PlayerCharacter player = new PlayerCharacter();
         public void Run()
         {
-
             AskName();
             AskRace();
 
-            //test if it works properly
-            Console.WriteLine($"You are {player.pName}, right? The {player.pRace.ToString().ToLower()} race?");
-            Console.ReadKey(true);
+            while (true)
+            {
+
+            }
         }
         private void AskName()
         {

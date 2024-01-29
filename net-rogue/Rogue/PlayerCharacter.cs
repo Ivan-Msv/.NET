@@ -26,5 +26,20 @@ namespace Rogue
         public Class pClass;
 
         public Vector2 playerPos;
+
+        private char image;
+        private ConsoleColor color;
+
+        public PlayerCharacter(char image, ConsoleColor color)
+        {
+            this.image = image;
+            this.color = color;
+        }
+
+        public void Move(int moveX, int moveY)
+        {
+            playerPos.X += moveX;
+            playerPos.Y += moveY;
+        }
     }
 }
