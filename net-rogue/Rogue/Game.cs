@@ -12,18 +12,6 @@ namespace Rogue
         PlayerCharacter player = new PlayerCharacter('@', ConsoleColor.Green);
         public void Run()
         {
-            int mapWidth = 8;
-            int[] mapTiles = new int[]
-            {
-                2, 2, 2, 2, 2, 2, 2, 2, 
-                2, 1, 1, 2, 1, 1, 1, 2,
-                2, 1, 1, 2, 1, 1, 1, 2,
-                2, 1, 1, 1, 1, 1, 2, 2,
-                2, 2, 2, 2, 1, 1, 1, 2,
-                2, 1, 1, 1, 1, 1, 1, 2,
-                2, 2, 2, 2, 2, 2, 2, 2
-            };  
-
             Console.CursorVisible = false;
             Console.WindowWidth = 60;
             Console.WindowHeight = 26;
@@ -32,9 +20,10 @@ namespace Rogue
 
             AskName();
             AskRace();
-            player.playerPos = new Vector2(10, 10);
+            player.playerPos = new Vector2(4, 4);
 
             Console.Clear();
+            MapVisual();
             player.Draw();
 
             bool game_running = true;
@@ -62,7 +51,46 @@ namespace Rogue
                         break;
                 }
                 Console.Clear();
+                MapVisual();
                 player.Draw();
+            }
+        }
+        private void MapVisual()
+        {
+            int mapWidth = 8;
+            int[] mapTiles = new int[]
+            {
+                2, 2, 2, 2, 2, 2, 2, 2,
+                2, 1, 1, 2, 1, 1, 1, 2,
+                2, 1, 1, 2, 1, 1, 1, 2,
+                2, 1, 1, 1, 1, 1, 2, 2,
+                2, 2, 2, 2, 1, 1, 1, 2,
+                2, 1, 1, 1, 1, 1, 1, 2,
+                2, 2, 2, 2, 2, 2, 2, 2
+            };
+
+            Console.ForegroundColor = ConsoleColor.Gray;
+            int map_start_row = 2;
+            int map_start_col = 2;
+            for (int row = 0; row < mapTiles.Length / mapWidth; row++)
+            {
+                for (int col = 0; col < mapWidth; col++)
+                {
+                    int tileId = mapTiles[row * mapWidth + col];
+                    Console.SetCursorPosition(map_start_col + col, map_start_row + row);
+                    switch (tileId)
+                    {
+                        case 1:
+                            Console.Write(".");
+                            break;
+                        case 2:
+                            Console.Write("#");
+                            break;
+                        default:
+                            Console.Write(" ");
+                            break;
+                    }
+                }
             }
         }
         private void AskName()
