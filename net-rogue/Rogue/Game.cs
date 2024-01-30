@@ -3,20 +3,66 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Numerics;
 
 namespace Rogue
 {
     class Game
     {
-        PlayerCharacter player = new PlayerCharacter();
+        PlayerCharacter player = new PlayerCharacter('@', ConsoleColor.Green);
         public void Run()
         {
+            int mapWidth = 8;
+            int[] mapTiles = new int[]
+            {
+                2, 2, 2, 2, 2, 2, 2, 2, 
+                2, 1, 1, 2, 1, 1, 1, 2,
+                2, 1, 1, 2, 1, 1, 1, 2,
+                2, 1, 1, 1, 1, 1, 2, 2,
+                2, 2, 2, 2, 1, 1, 1, 2,
+                2, 1, 1, 1, 1, 1, 1, 2,
+                2, 2, 2, 2, 2, 2, 2, 2
+            };  
+
+            Console.CursorVisible = false;
+            Console.WindowWidth = 60;
+            Console.WindowHeight = 26;
+
+
+
             AskName();
             AskRace();
+            player.playerPos = new Vector2(10, 10);
 
-            while (true)
+            Console.Clear();
+            player.Draw();
+
+            bool game_running = true;
+            while (game_running)
             {
-
+                ConsoleKeyInfo key = Console.ReadKey(true);
+                switch (key.Key)
+                {
+                    case ConsoleKey.UpArrow:
+                        player.Move(0, -1);
+                        break;
+                    case ConsoleKey.DownArrow:
+                        player.Move(0, 1);
+                        break;
+                    case ConsoleKey.LeftArrow:
+                        player.Move(-1, 0);
+                        break;
+                    case ConsoleKey.RightArrow:
+                        player.Move(1, 0);
+                        break;
+                    case ConsoleKey.Escape:
+                        game_running = false;
+                        break;
+                    default:
+                        break;
+                }
+                Console.Clear();
+                player.Draw();
             }
         }
         private void AskName()

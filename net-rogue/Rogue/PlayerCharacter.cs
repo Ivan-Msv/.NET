@@ -40,6 +40,15 @@ namespace Rogue
         {
             playerPos.X += moveX;
             playerPos.Y += moveY;
+            playerPos.X = Math.Min(Math.Max(playerPos.X, 0), Console.WindowWidth - 1);
+            playerPos.Y = Math.Min(Math.Max(playerPos.Y, 0), Console.WindowHeight - 1);
+        }
+
+        public void Draw()
+        {
+            Console.ForegroundColor = color;
+            Console.SetCursorPosition(Convert.ToInt32(playerPos.X), Convert.ToInt32(playerPos.Y));
+            Console.Write(image);
         }
     }
 }
