@@ -1,0 +1,17 @@
+{
+    "mapWidth": 8,
+    "layers": [
+        {
+            "name": "ground",
+            "mapTiles": [ "....." ]
+        },
+        {
+            "name": "items",
+            "mapTiles": [ "...." ]
+        },
+        {
+            "name": "enemies",
+            "mapTiles": [ "..." ]
+        }
+    ]
+}

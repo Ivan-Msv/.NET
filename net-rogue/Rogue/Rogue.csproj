@@ -51,6 +51,7 @@
   <ItemGroup>
     <Compile Include="Game.cs" />
     <Compile Include="Map.cs" />
+    <Compile Include="MapLayer.cs" />
     <Compile Include="MapLoader.cs" />
     <Compile Include="PlayerCharacter.cs" />
     <Compile Include="Program.cs" />
@@ -58,6 +59,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="Maps\level01.json" />
     <None Include="Maps\mapfile.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

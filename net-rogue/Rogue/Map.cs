@@ -10,6 +10,7 @@ namespace Rogue
     {
         public int mapWidth;
         public int[] mapTiles;
+        public MapLayer[] layers;
         public void Draw()
         {
             Console.ForegroundColor = ConsoleColor.Gray;
