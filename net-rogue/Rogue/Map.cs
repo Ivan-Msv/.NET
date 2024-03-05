@@ -155,28 +155,55 @@ namespace Rogue
                     }
                 }
             }
-        } 
-
-        public Enemy GetEnemyAt(int x, int y)
+        }
+        public void DeleteEnemyOrItem(Enemy enemyScan)
         {
-            int index = x + y * mapWidth;
-            int enemyCheck = layers[2].mapTiles[index];
-            if (enemyCheck != 0)
+            enemies.Remove(enemyScan);
+        }
+
+        public Enemy GetEnemyAt(Vector2 pos)
+        {
+            //int index = (int)pos.X + (int)pos.Y * mapWidth;
+            //int enemyCheck = layers[2].mapTiles[index];
+            int index = -1;
+
+            for (int i = 0; i < enemies.Count; i++)
             {
-                return enemies[enemyCheck-1]; // outputting wrong index or something, fix later
+                if (enemies[i].position == pos)
+                {
+                    index = i;
+                    break;
+                }
+            }
+
+            if (index != -1)
+            {
+                return enemies[index];
             }
             else
             {
                 return null;
             }
         }
-        public Item GetItemAt(int x, int y)
+        public Item GetItemAt(Vector2 pos)
         {
-            int index = x + y * mapWidth;
-            int itemCheck = layers[1].mapTiles[index];
-            if (itemCheck != 0)
+            //int index = x + y * mapWidth;
+            //int itemCheck = layers[1].mapTiles[index];
+            int index = -1;
+
+
+            for (int i = 0; i < items.Count; i++)
             {
-                return items[itemCheck - 1];
+                if (items[i].position == pos)
+                {
+                    index = i;
+                    break;
+                }
+            }
+
+            if (index != -1)
+            {
+                return items[index];
             }
             else
             {

@@ -11,17 +11,27 @@ namespace Rogue
     {
         PlayerCharacter player = new PlayerCharacter('@', ConsoleColor.Green);
         Map level01;
-
+        string enemySymbol1;
+        string enemySymbol2;
         public void Run()
         {
             Console.CursorVisible = false;
-            Console.WindowWidth = 60;
+            Console.WindowWidth = 100;
             Console.WindowHeight = 26;
+
 
             AskName();
             AskRace();
             AskClass();
+
             player.playerPos = new Vector2(1, 1);
+            player.currentMoney = player.StartingMoney(player.pRace);
+
+            enemySymbol1 = "$";
+            enemySymbol2 = "O";
+
+            Console.WindowWidth = 60;
+            Console.WindowHeight = 26;
 
             MapLoader loader = new MapLoader();
             level01 = loader.ReadMapFromFile("Maps/level01.json");
@@ -31,6 +41,7 @@ namespace Rogue
             level01.Draw(ConsoleColor.DarkGreen, 1, "?", "!");
             level01.Draw(ConsoleColor.Red, 2, "$", "O");
             player.Draw();
+            ShowMoney(player.currentMoney);
 
             bool game_running = true;
             while (game_running)
@@ -66,17 +77,20 @@ namespace Rogue
                 }
                 Console.Clear();
                 level01.Draw(ConsoleColor.Gray, 0, ".", "#");
-                level01.Draw(ConsoleColor.DarkGreen, 1, "?", "!");
-                level01.Draw(ConsoleColor.Red, 2, "$", "O");
+                level01.Draw(ConsoleColor.DarkGreen, 1, "!", "?");
+                level01.Draw(ConsoleColor.Red, 2, enemySymbol1, enemySymbol2);
                 ScanEnemiesAndItems();
                 player.Draw();
+                ShowMoney(player.currentMoney);
             }
         }
         private void AskName()
         {
+            Console.ForegroundColor = ConsoleColor.DarkYellow;
             Console.WriteLine("What is your name?");
             while (true)
             {
+                Console.ForegroundColor = ConsoleColor.White;
                 string nameanswer = Console.ReadLine();
                 if (nameanswer.Length >= 3 && nameanswer.Length <= 10 && !nameanswer.Any(char.IsNumber))
                 {
@@ -85,22 +99,31 @@ namespace Rogue
                 }
                 else if (nameanswer.Any(char.IsNumber))
                 {
-                    Console.WriteLine($"Name ({nameanswer}) is not supposed to contain any numbers, try again.");
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.Write($"Name (");
+                    Console.ForegroundColor = ConsoleColor.White;
+                    Console.Write(nameanswer);
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine(") is not supposed to contain any numbers, try again.");
                     continue;
                 }
                 else if (nameanswer.Length >= 10)
                 {
+                    Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine("Name too long, try again.");
                 }
                 else
                 {
+                    Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine("Name too short, try again.");
                 }
             }
         }
         private void AskRace()
         {
+            Console.ForegroundColor = ConsoleColor.DarkYellow;
             Console.WriteLine("Please select your race.");
+            Console.ForegroundColor = ConsoleColor.White;
             Console.WriteLine("1. Human");
             Console.WriteLine("2. Elf");
             Console.WriteLine("3. Goblin");
@@ -116,7 +139,9 @@ namespace Rogue
                 }
                 else
                 {
+                    Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine("Choose using the numbers.");
+                    Console.ResetColor();
                     continue;
                 }
             }
@@ -140,7 +165,9 @@ namespace Rogue
 
         private void AskClass()
         {
+            Console.ForegroundColor = ConsoleColor.DarkYellow;
             Console.WriteLine("Please select your class.");
+            Console.ForegroundColor = ConsoleColor.White;
             Console.WriteLine("1. Knight");
             Console.WriteLine("2. Archer");
             Console.WriteLine("3. Mage");
@@ -156,7 +183,9 @@ namespace Rogue
                 }
                 else
                 {
+                    Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine("Choose using the numbers.");
+                    Console.ResetColor();
                     continue;
                 }
             }
@@ -180,22 +209,23 @@ namespace Rogue
         private void ScanEnemiesAndItems()
         {
             Console.ForegroundColor = ConsoleColor.Magenta;
-            Console.SetCursorPosition(10, 6);
+            Console.SetCursorPosition(0, 7);
 
-            Enemy enemyScan = level01.GetEnemyAt((int)player.playerPos.X, (int)player.playerPos.Y);
-            Item itemScan = level01.GetItemAt((int)player.playerPos.X, (int)player.playerPos.Y);
+            Enemy enemyScan = level01.GetEnemyAt(player.playerPos);
+            Item itemScan = level01.GetItemAt(player.playerPos);
 
             if (enemyScan != null)
             {
                 switch (enemyScan.name.ToLower())
                 {
-                    case "thief":
-                        Console.WriteLine($"You hit an enemy: <{enemyScan.name}>");
-                        break;
                     case "troll":
                         Console.WriteLine($"You hit an enemy: <{enemyScan.name}>");
                         break;
-                    default:
+                    case "thief":
+                        Console.WriteLine($"You encounter a <{enemyScan.name}>. \nHe steals half of your money.");
+                        player.currentMoney /= 2;
+                        level01.DeleteEnemyOrItem(enemyScan); // only deletes the enemy itself but the icon ($) stays
+                        enemySymbol1 = "X"; // The only thing I could come up with that doesn't change the whole draw function again LOL
                         break;
                 }
             }
@@ -204,6 +234,12 @@ namespace Rogue
                 Console.WriteLine($"You find an item: <{itemScan.name}>");
             }
             Console.ResetColor();
+        }
+        private void ShowMoney(int money)
+        {
+            Console.SetCursorPosition(10, 0);
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine($"Gold: {money}");
         }
     }
 }
