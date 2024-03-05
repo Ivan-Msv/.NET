@@ -20,13 +20,16 @@ namespace Rogue
 
             AskName();
             AskRace();
-            player.playerPos = new Vector2(4, 4);
+            AskClass();
+            player.playerPos = new Vector2(1, 1);
 
             MapLoader loader = new MapLoader();
-            level01 = loader.ReadMapFromFile("Maps/mapfile.json");
+            level01 = loader.ReadMapFromFile("Maps/level01.json");
 
             Console.Clear();
-            level01.Draw();
+            level01.Draw(ConsoleColor.Gray, 0, ".", "#");
+            level01.Draw(ConsoleColor.DarkGreen, 1, "?", "!");
+            level01.Draw(ConsoleColor.Red, 2, "$", "O");
             player.Draw();
 
             bool game_running = true;
@@ -56,13 +59,16 @@ namespace Rogue
                             break;
                     }
                 int index = (int)player.playerPos.X + moveX + ((int)player.playerPos.Y + moveY) * level01.mapWidth;
-                int wallCheck = level01.mapTiles[index];
+                int wallCheck = level01.layers[0].mapTiles[index];
                 if (wallCheck != 2)
                 {
                     player.Move(moveX, moveY);
                 }
                 Console.Clear();
-                level01.Draw();
+                level01.Draw(ConsoleColor.Gray, 0, ".", "#");
+                level01.Draw(ConsoleColor.DarkGreen, 1, "?", "!");
+                level01.Draw(ConsoleColor.Red, 2, "$", "O");
+                ScanEnemiesAndItems();
                 player.Draw();
             }
         }
@@ -130,6 +136,74 @@ namespace Rogue
                     Console.WriteLine("Something went wrong...");
                     break;
             }
+        }
+
+        private void AskClass()
+        {
+            Console.WriteLine("Please select your class.");
+            Console.WriteLine("1. Knight");
+            Console.WriteLine("2. Archer");
+            Console.WriteLine("3. Mage");
+
+            int classAnswer;
+            while (true)
+            {
+                char classAnswerLine = Console.ReadKey(true).KeyChar;
+                if (int.TryParse(classAnswerLine.ToString(), out int integer) && Enumerable.Range(1, 3).Contains(integer))
+                {
+                    classAnswer = integer;
+                    break;
+                }
+                else
+                {
+                    Console.WriteLine("Choose using the numbers.");
+                    continue;
+                }
+            }
+
+            switch (classAnswer)
+            {
+                case 1:
+                    player.pClass = Class.Knight;
+                    break;
+                case 2:
+                    player.pClass = Class.Archer;
+                    break;
+                case 3:
+                    player.pClass = Class.Mage;
+                    break;
+                default:
+                    Console.WriteLine("Something went wrong...");
+                    break;
+            }
+        }
+        private void ScanEnemiesAndItems()
+        {
+            Console.ForegroundColor = ConsoleColor.Magenta;
+            Console.SetCursorPosition(10, 6);
+
+            Enemy enemyScan = level01.GetEnemyAt((int)player.playerPos.X, (int)player.playerPos.Y);
+            Item itemScan = level01.GetItemAt((int)player.playerPos.X, (int)player.playerPos.Y);
+
+            if (enemyScan != null)
+            {
+                switch (enemyScan.name.ToLower())
+                {
+                    case "thief":
+                        Console.WriteLine($"You hit an enemy: <{enemyScan.name}>");
+                        break;
+                    case "troll":
+                        Console.WriteLine($"You hit an enemy: <{enemyScan.name}>");
+                        break;
+                    default:
+                        break;
+                }
+            }
+            if (itemScan != null)
+            {
+                Console.WriteLine($"You find an item: <{itemScan.name}>");
+            }
+            Console.ResetColor();
         }
     }
 }

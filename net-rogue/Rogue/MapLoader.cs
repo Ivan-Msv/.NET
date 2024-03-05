@@ -19,7 +19,7 @@ namespace Rogue
                 2, 2, 2, 2, 2, 2, 2, 2,
                 2, 1, 1, 2, 1, 1, 1, 2,
                 2, 1, 1, 2, 1, 1, 1, 2,
-                2, 1, 1, 1, 1, 1, 2, 2,
+                2, 2, 2, 2, 2, 2, 2, 2,
                 2, 2, 2, 2, 1, 1, 1, 2,
                 2, 1, 1, 1, 1, 1, 1, 2,
                 2, 2, 2, 2, 2, 2, 2, 2
@@ -42,7 +42,11 @@ namespace Rogue
             {
                 fileContents = reader.ReadToEnd();
             }
+
             Map loadedMap = JsonConvert.DeserializeObject<Map>(fileContents);
+
+            loadedMap.LoadEnemiesAndItems();
+
             return loadedMap;
         }
     }

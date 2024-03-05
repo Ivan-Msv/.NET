@@ -3,18 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Numerics;
 
 namespace Rogue
 {
-    class MapLayer
+    class Item
     {
         public string name;
-        public int[] mapTiles;
+        public Vector2 position;
 
-        public MapLayer(string name, int[] maptiles)
+        public Item(string name, Vector2 position)
         {
             this.name = name;
-            mapTiles = maptiles;
+            this.position = position;
         }
     }
 }
