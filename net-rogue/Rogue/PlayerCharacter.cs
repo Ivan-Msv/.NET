@@ -29,12 +29,14 @@ namespace Rogue
         public Vector2 position;
         public int currentMoney;
 
-        private char image;
-        private Color color;
+        Texture image;
+        Color color;
 
-        public PlayerCharacter(char image, Color color)
+        int imagePixelX;
+        int imagePixelY;
+
+        public PlayerCharacter(Color color)
         {
-            this.image = image;
             this.color = color;
         }
 
@@ -50,8 +52,10 @@ namespace Rogue
         {
             int convertedX = Convert.ToInt32(position.X * Game.tileSize);
             int convertedY = Convert.ToInt32(position.Y * Game.tileSize);
+
+            Rectangle imageRect = new Rectangle(imagePixelX, imagePixelY, Game.tileSize, Game.tileSize);
             Raylib.DrawRectangle(convertedX, convertedY, Game.tileSize, Game.tileSize, Raylib.BLACK);
-            Raylib.DrawText(image.ToString(), convertedX, convertedY, Game.tileSize, color);
+            Raylib.DrawTextureRec(image, imageRect, position * Game.tileSize, Raylib.WHITE);
         }
         public int StartingMoney(Race race)
         {
@@ -72,6 +76,13 @@ namespace Rogue
                     break;
             }
             return money;
+        }
+        public void SetPlayerImageAndIndex(Texture atlasImage, int imagesPerRow, Vector2 position)
+        {
+            int index = (int)position.X + (int)position.Y * imagesPerRow;
+            image = atlasImage;
+            imagePixelX = (index % imagesPerRow) * Game.tileSize;
+            imagePixelY = (index / imagesPerRow) * Game.tileSize;
         }
     }
 }

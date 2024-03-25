@@ -16,8 +16,8 @@ namespace Rogue
         public MapLayer itemLayer;
         public MapLayer enemyLayer;
 
-        List<Enemy> enemies;
-        List<Item> items;
+        public List<Enemy> enemies;
+        public List<Item> items;
 
         //public void Draw()
         //{
@@ -79,7 +79,7 @@ namespace Rogue
         //    }
         //} // OLD DRAW
 
-        public void Draw(Color color, int layerIndex, string case1, string case2)
+        public void Draw(Texture image, int layerIndex)
         {
             int map_start_row = 0;
             int map_start_col = 0;
@@ -91,23 +91,26 @@ namespace Rogue
                     int mapIndex = row * mapWidth + col;
 
                     int tileId = layers[layerIndex].mapTiles[mapIndex];
-                    Console.SetCursorPosition(map_start_col + col, map_start_row + row);
                     int posX = (map_start_col + col) * Game.tileSize;
                     int posY = (map_start_row + row) * Game.tileSize;
+                    int tileIndex = tileId - 1;
+                    Rectangle mapRect = new Rectangle(posX, posY, Game.tileSize, Game.tileSize);
+                    Vector2 mapPos = new Vector2(posX, posY);
 
                     switch (tileId)
                     {
                         case 1:
                             Raylib.DrawRectangle(posX, posY, Game.tileSize, Game.tileSize, Raylib.BLACK);
-                            Raylib.DrawText(case1, posX, posY, Game.tileSize, color);
+                            Raylib.DrawTextureRec(image, mapRect, mapPos, Raylib.WHITE);
                             break;
                         case 2:
                             Raylib.DrawRectangle(posX, posY, Game.tileSize, Game.tileSize, Raylib.BLACK);
-                            Raylib.DrawText(case2, posX, posY, Game.tileSize, color);
+                            Raylib.DrawTextureRec(image, mapRect, mapPos, Raylib.WHITE);
                             break;
                         default:
                             break;
                     }
+                    // currently doesnt know how to draw specific texture, fix that. otherwise works ? idk
                 }
             }
         }
@@ -164,11 +167,8 @@ namespace Rogue
         {
             enemies.Remove(enemyScan);
         }
-
         public Enemy GetEnemyAt(Vector2 pos)
         {
-            //int index = (int)pos.X + (int)pos.Y * mapWidth;
-            //int enemyCheck = layers[2].mapTiles[index];
             int index = -1;
 
             for (int i = 0; i < enemies.Count; i++)
@@ -191,8 +191,6 @@ namespace Rogue
         }
         public Item GetItemAt(Vector2 pos)
         {
-            //int index = x + y * mapWidth;
-            //int itemCheck = layers[1].mapTiles[index];
             int index = -1;
 
 

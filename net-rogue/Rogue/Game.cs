@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Numerics;
 using ZeroElectric.Vinculum;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Rogue
 {
@@ -12,9 +13,9 @@ namespace Rogue
     {
         PlayerCharacter player;
         Map level01;
+        Texture mapImage;
+        public static readonly int imagesPerRow = 12;
         public static readonly int tileSize = 16;
-        string enemySymbol1;
-        string enemySymbol2;
         int screen_width = 1280;
         int screen_height = 720;
 
@@ -34,18 +35,22 @@ namespace Rogue
 
             CreateCharacter();
 
-            enemySymbol1 = "$";
-            enemySymbol2 = "O";
-
-            Console.WindowWidth = 60;
-            Console.WindowHeight = 26;
-
             MapLoader loader = new MapLoader();
             level01 = loader.ReadMapFromFile("Maps/level01.json");
 
 
             Raylib.InitWindow(screen_width, screen_height, "Rogue");
-            Raylib.SetTextureFilter(game_screen.texture, TextureFilter.TEXTURE_FILTER_BILINEAR);
+            mapImage = Raylib.LoadTexture("data/images/tilemap.png");
+
+            ClassTexture();
+            EnemyAndItemTexture();
+
+            Raylib.SetWindowState(ConfigFlags.FLAG_WINDOW_RESIZABLE);
+            game_width = 480;
+            game_height = 270;
+            game_screen = Raylib.LoadRenderTexture(game_width, game_height);
+
+            Raylib.SetTextureFilter(game_screen.texture, TextureFilter.TEXTURE_FILTER_POINT);
             Raylib.SetWindowMinSize(game_width, game_height);
             Raylib.SetTargetFPS(30);
         }
@@ -53,13 +58,20 @@ namespace Rogue
         {
             while (!Raylib.WindowShouldClose())
             {
-                DrawGameScaled();
+                DrawGameToTexture();
                 PlayerMovement();
+                if (Raylib.IsKeyPressed(KeyboardKey.KEY_ESCAPE))
+                {
+                    break;
+                }
             }
+            Raylib.CloseWindow();
+            Raylib.UnloadRenderTexture(game_screen);
+            Console.Clear();
         }
         private PlayerCharacter CreateCharacter()
         {
-            player = new PlayerCharacter('@', Raylib.GREEN);
+            player = new PlayerCharacter(Raylib.GREEN);
             player.pName = AskName();
             player.pRace = AskRace();
             player.pClass = AskClass();
@@ -181,6 +193,62 @@ namespace Rogue
                     return Class.Knight;
             }
         }
+        private void ClassTexture()
+        {
+            switch (player.pClass)
+            {
+                case Class.Knight:
+                    player.SetPlayerImageAndIndex(mapImage, 12, new Vector2(0, 8));
+                    Console.WriteLine("Knight?");
+                    break;
+                case Class.Archer:
+                    player.SetPlayerImageAndIndex(mapImage, 12, new Vector2(1, 7));
+                    Console.WriteLine("archer");
+                    break;
+                case Class.Mage:
+                    player.SetPlayerImageAndIndex(mapImage, 12, new Vector2(0, 7));
+                    Console.WriteLine("mage");
+                    break;
+            }
+        }
+        private void EnemyAndItemTexture()
+        {
+            foreach (var enemy in level01.enemies)
+            {
+                switch (enemy.name.ToLower())
+                {
+                    case "thief":
+                        enemy.SetEnemyImageAndIndex(mapImage, imagesPerRow, new Vector2(4, 8));
+                        break;
+                    case "troll":
+                        enemy.SetEnemyImageAndIndex(mapImage, imagesPerRow, new Vector2(1, 9));
+                        break;
+                }
+            }
+            foreach (var item in level01.items)
+            {
+                switch (item.name.ToLower())
+                {
+                    case "pickaxe":
+                        item.SetItemImageAndIndex(mapImage, imagesPerRow, new Vector2(9, 9));
+                        break;
+                    case "sword":
+                        item.SetItemImageAndIndex(mapImage, imagesPerRow, new Vector2(8, 8));
+                        break;
+                }
+            }
+        }
+        private void DrawEnemyAndItems()
+        {
+            foreach (var enemy in level01.enemies)
+            {
+                enemy.Draw();
+            }
+            foreach (var item in level01.items)
+            {
+                item.Draw();
+            }
+        }
         private void ScanEnemiesAndItems()
         {
             Color color = Raylib.MAGENTA;
@@ -199,7 +267,6 @@ namespace Rogue
                         Raylib.DrawText($"You encounter a <{enemyScan.name}>. \nHe steals half of your money.", 0, 7 * tileSize, tileSize, color);
                         player.currentMoney /= 2;
                         level01.DeleteEnemyOrItem(enemyScan); // only deletes the enemy itself but the icon ($) stays
-                        enemySymbol1 = "X"; // The only thing I could come up with that doesn't change the whole draw function again LOL
                         break;
                 }
             }
@@ -214,45 +281,51 @@ namespace Rogue
         }
         private void DrawGameToTexture()
         {
-
+            Raylib.BeginTextureMode(game_screen);
+            level01.Draw(mapImage, 0);
+            ScanEnemiesAndItems();
+            DrawEnemyAndItems();
+            player.Draw();
+            ShowMoney(player.currentMoney);
+            Raylib.EndTextureMode();
+            DrawGameScaled();
         }
         private void DrawGameScaled()
         {
             Raylib.BeginDrawing();
-            level01.Draw(Raylib.GRAY, 0, ".", "#");
-            level01.Draw(Raylib.DARKGREEN, 1, "!", "?");
-            level01.Draw(Raylib.RED, 2, enemySymbol1, enemySymbol2);
-            ScanEnemiesAndItems();
-            player.Draw();
-            ShowMoney(player.currentMoney);
+            Raylib.ClearBackground(Raylib.BLACK);
+
+            int draw_width = Raylib.GetScreenWidth();
+            int draw_height = Raylib.GetScreenHeight();
+            float scale = Math.Min((float)draw_width / game_width, (float)draw_height / game_height);
+            
+            Rectangle source = new Rectangle(0.0f, 0.0f, game_screen.texture.width, game_screen.texture.height * -1.0f);
+            Rectangle destination = new Rectangle((draw_width - (float)game_width * scale) * 0.5f, (draw_height - (float)game_height * scale) * 0.5f, game_width * scale, game_height * scale);
+
+            Raylib.DrawTexturePro(game_screen.texture, source, destination, new Vector2(0,0), 0.0f, Raylib.WHITE);
             Raylib.EndDrawing();
         }
         private void PlayerMovement()
         {
             int moveX = 0;
             int moveY = 0;
-            ConsoleKeyInfo key = Console.ReadKey(true);
-            switch (key.Key)
+            if (Raylib.IsKeyPressed(KeyboardKey.KEY_UP))
             {
-                case ConsoleKey.UpArrow:
-                    moveY = -1;
-                    break;
-                case ConsoleKey.DownArrow:
-                    moveY = 1;
-                    break;
-                case ConsoleKey.LeftArrow:
-                    moveX = -1;
-                    break;
-                case ConsoleKey.RightArrow:
-                    moveX = 1;
-                    break;
-                case ConsoleKey.Escape:
-                    Raylib.CloseWindow();
-                    Raylib.UnloadRenderTexture(game_screen);
-                    break;
-                default:
-                    break;
+                moveY = -1;
             }
+            else if (Raylib.IsKeyPressed(KeyboardKey.KEY_DOWN))
+            {
+                moveY = 1;
+            }
+            else if (Raylib.IsKeyPressed(KeyboardKey.KEY_LEFT))
+            {
+                moveX = -1;
+            }
+            else if (Raylib.IsKeyPressed(KeyboardKey.KEY_RIGHT))
+            {
+                moveX = 1;
+            }
+
             int index = (int)player.position.X + moveX + ((int)player.position.Y + moveY) * level01.mapWidth;
             int wallCheck = level01.layers[0].mapTiles[index];
             if (wallCheck != 2)
