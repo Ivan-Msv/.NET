@@ -4,13 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Numerics;
+using ZeroElectric.Vinculum;
 
 namespace Rogue
 {
     class Map
     {
         public int mapWidth;
-        public MapLayer[] layers;
+        public MapLayer[] layers { get; set; }
         public int[] mapTiles;
         public MapLayer itemLayer;
         public MapLayer enemyLayer;
@@ -78,9 +79,8 @@ namespace Rogue
         //    }
         //} // OLD DRAW
 
-        public void Draw(ConsoleColor color, int layerIndex, string case1, string case2)
+        public void Draw(Color color, int layerIndex, string case1, string case2)
         {
-            Console.ForegroundColor = color;
             int map_start_row = 0;
             int map_start_col = 0;
 
@@ -92,14 +92,18 @@ namespace Rogue
 
                     int tileId = layers[layerIndex].mapTiles[mapIndex];
                     Console.SetCursorPosition(map_start_col + col, map_start_row + row);
+                    int posX = (map_start_col + col) * Game.tileSize;
+                    int posY = (map_start_row + row) * Game.tileSize;
 
                     switch (tileId)
                     {
                         case 1:
-                            Console.Write(case1);
+                            Raylib.DrawRectangle(posX, posY, Game.tileSize, Game.tileSize, Raylib.BLACK);
+                            Raylib.DrawText(case1, posX, posY, Game.tileSize, color);
                             break;
                         case 2:
-                            Console.Write(case2);
+                            Raylib.DrawRectangle(posX, posY, Game.tileSize, Game.tileSize, Raylib.BLACK);
+                            Raylib.DrawText(case2, posX, posY, Game.tileSize, color);
                             break;
                         default:
                             break;

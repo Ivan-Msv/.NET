@@ -24,18 +24,16 @@
     <ManifestCertificateThumbprint>A57FB3AF7B1AF5ED4CD8215F84076771B333AAE3</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestKeyFile>Rogue_TemporaryKey.pfx</ManifestKeyFile>
-  </PropertyGroup>
-  <PropertyGroup>
     <GenerateManifests>true</GenerateManifests>
   </PropertyGroup>
   <PropertyGroup>
-    <SignManifests>true</SignManifests>
+    <SignManifests>false</SignManifests>
     <AssemblyTitle>Rogue</AssemblyTitle>
     <Product>Rogue</Product>
     <Copyright>Copyright ©  2024</Copyright>
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
     <FileVersion>1.0.0.0</FileVersion>
+    <NoWin32Manifest>true</NoWin32Manifest>
   </PropertyGroup>
   <ItemGroup>
     <None Update="Maps\level01.json">
@@ -44,7 +42,6 @@
     <None Update="Maps\mapfile.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Rogue_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Enemies\" />
@@ -62,6 +59,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="Raylib-CSharp-Vinculum" Version="5.0.1" />
   </ItemGroup>
 </Project>

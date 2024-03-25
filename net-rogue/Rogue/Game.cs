@@ -4,28 +4,35 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Numerics;
+using ZeroElectric.Vinculum;
 
 namespace Rogue
 {
     class Game
     {
-        PlayerCharacter player = new PlayerCharacter('@', ConsoleColor.Green);
+        PlayerCharacter player;
         Map level01;
+        public static readonly int tileSize = 16;
         string enemySymbol1;
         string enemySymbol2;
+        int screen_width = 1280;
+        int screen_height = 720;
+
+        int game_width;
+        int game_height;
+        RenderTexture game_screen;
         public void Run()
+        {
+            Init();
+            GameLoop();
+        }
+        private void Init()
         {
             Console.CursorVisible = false;
             Console.WindowWidth = 100;
             Console.WindowHeight = 26;
 
-
-            AskName();
-            AskRace();
-            AskClass();
-
-            player.playerPos = new Vector2(1, 1);
-            player.currentMoney = player.StartingMoney(player.pRace);
+            CreateCharacter();
 
             enemySymbol1 = "$";
             enemySymbol2 = "O";
@@ -36,55 +43,31 @@ namespace Rogue
             MapLoader loader = new MapLoader();
             level01 = loader.ReadMapFromFile("Maps/level01.json");
 
-            Console.Clear();
-            level01.Draw(ConsoleColor.Gray, 0, ".", "#");
-            level01.Draw(ConsoleColor.DarkGreen, 1, "?", "!");
-            level01.Draw(ConsoleColor.Red, 2, "$", "O");
-            player.Draw();
-            ShowMoney(player.currentMoney);
 
-            bool game_running = true;
-            while (game_running)
+            Raylib.InitWindow(screen_width, screen_height, "Rogue");
+            Raylib.SetTextureFilter(game_screen.texture, TextureFilter.TEXTURE_FILTER_BILINEAR);
+            Raylib.SetWindowMinSize(game_width, game_height);
+            Raylib.SetTargetFPS(30);
+        }
+        private void GameLoop()
+        {
+            while (!Raylib.WindowShouldClose())
             {
-                int moveX = 0;
-                int moveY = 0;
-                ConsoleKeyInfo key = Console.ReadKey(true);
-                    switch (key.Key)
-                    {
-                        case ConsoleKey.UpArrow:
-                            moveY = -1;
-                            break;
-                        case ConsoleKey.DownArrow:
-                            moveY = 1;
-                            break;
-                        case ConsoleKey.LeftArrow:
-                            moveX = -1;
-                            break;
-                        case ConsoleKey.RightArrow:
-                            moveX = 1;
-                            break;
-                        case ConsoleKey.Escape:
-                            game_running = false;
-                            break;
-                        default:
-                            break;
-                    }
-                int index = (int)player.playerPos.X + moveX + ((int)player.playerPos.Y + moveY) * level01.mapWidth;
-                int wallCheck = level01.layers[0].mapTiles[index];
-                if (wallCheck != 2)
-                {
-                    player.Move(moveX, moveY);
-                }
-                Console.Clear();
-                level01.Draw(ConsoleColor.Gray, 0, ".", "#");
-                level01.Draw(ConsoleColor.DarkGreen, 1, "!", "?");
-                level01.Draw(ConsoleColor.Red, 2, enemySymbol1, enemySymbol2);
-                ScanEnemiesAndItems();
-                player.Draw();
-                ShowMoney(player.currentMoney);
+                DrawGameScaled();
+                PlayerMovement();
             }
         }
-        private void AskName()
+        private PlayerCharacter CreateCharacter()
+        {
+            player = new PlayerCharacter('@', Raylib.GREEN);
+            player.pName = AskName();
+            player.pRace = AskRace();
+            player.pClass = AskClass();
+            player.position = new Vector2(1, 1);
+            player.currentMoney = player.StartingMoney(player.pRace);
+            return player;
+        }
+        private static string AskName()
         {
             Console.ForegroundColor = ConsoleColor.DarkYellow;
             Console.WriteLine("What is your name?");
@@ -94,8 +77,7 @@ namespace Rogue
                 string nameanswer = Console.ReadLine();
                 if (nameanswer.Length >= 3 && nameanswer.Length <= 10 && !nameanswer.Any(char.IsNumber))
                 {
-                    player.pName = nameanswer;
-                    break;
+                    return nameanswer;
                 }
                 else if (nameanswer.Any(char.IsNumber))
                 {
@@ -119,7 +101,7 @@ namespace Rogue
                 }
             }
         }
-        private void AskRace()
+        private static Race AskRace()
         {
             Console.ForegroundColor = ConsoleColor.DarkYellow;
             Console.WriteLine("Please select your race.");
@@ -149,21 +131,17 @@ namespace Rogue
             switch (raceAnswer)
             {
                 case 1:
-                    player.pRace = Race.Human;
-                    break;
+                    return Race.Human;
                 case 2:
-                    player.pRace = Race.Elf;
-                    break;
+                    return Race.Elf;
                 case 3:
-                    player.pRace = Race.Goblin;
-                    break;
+                    return Race.Goblin;
                 default:
                     Console.WriteLine("Something went wrong...");
-                    break;
+                    return Race.Human;
             }
         }
-
-        private void AskClass()
+        private static Class AskClass()
         {
             Console.ForegroundColor = ConsoleColor.DarkYellow;
             Console.WriteLine("Please select your class.");
@@ -193,53 +171,99 @@ namespace Rogue
             switch (classAnswer)
             {
                 case 1:
-                    player.pClass = Class.Knight;
-                    break;
+                    return Class.Knight;
                 case 2:
-                    player.pClass = Class.Archer;
-                    break;
+                    return Class.Archer;
                 case 3:
-                    player.pClass = Class.Mage;
-                    break;
+                    return Class.Mage;
                 default:
                     Console.WriteLine("Something went wrong...");
-                    break;
+                    return Class.Knight;
             }
         }
         private void ScanEnemiesAndItems()
         {
-            Console.ForegroundColor = ConsoleColor.Magenta;
-            Console.SetCursorPosition(0, 7);
+            Color color = Raylib.MAGENTA;
 
-            Enemy enemyScan = level01.GetEnemyAt(player.playerPos);
-            Item itemScan = level01.GetItemAt(player.playerPos);
+            Enemy enemyScan = level01.GetEnemyAt(player.position);
+            Item itemScan = level01.GetItemAt(player.position);
 
             if (enemyScan != null)
             {
                 switch (enemyScan.name.ToLower())
                 {
                     case "troll":
-                        Console.WriteLine($"You hit an enemy: <{enemyScan.name}>");
+                        Raylib.DrawText($"You hit an enemy: <{enemyScan.name}>", 0, 7 * tileSize, tileSize, color);
                         break;
                     case "thief":
-                        Console.WriteLine($"You encounter a <{enemyScan.name}>. \nHe steals half of your money.");
+                        Raylib.DrawText($"You encounter a <{enemyScan.name}>. \nHe steals half of your money.", 0, 7 * tileSize, tileSize, color);
                         player.currentMoney /= 2;
                         level01.DeleteEnemyOrItem(enemyScan); // only deletes the enemy itself but the icon ($) stays
                         enemySymbol1 = "X"; // The only thing I could come up with that doesn't change the whole draw function again LOL
                         break;
                 }
             }
-            if (itemScan != null)
+            else if (itemScan != null)
             {
-                Console.WriteLine($"You find an item: <{itemScan.name}>");
+                Raylib.DrawText($"You find an item: <{itemScan.name}>", 0, 7 * tileSize, tileSize, color);
             }
-            Console.ResetColor();
+            else
+            {
+                Raylib.DrawRectangle(0, 7 * tileSize, tileSize * 20, tileSize * 2, Raylib.BLACK);
+            }
+        }
+        private void DrawGameToTexture()
+        {
+
+        }
+        private void DrawGameScaled()
+        {
+            Raylib.BeginDrawing();
+            level01.Draw(Raylib.GRAY, 0, ".", "#");
+            level01.Draw(Raylib.DARKGREEN, 1, "!", "?");
+            level01.Draw(Raylib.RED, 2, enemySymbol1, enemySymbol2);
+            ScanEnemiesAndItems();
+            player.Draw();
+            ShowMoney(player.currentMoney);
+            Raylib.EndDrawing();
+        }
+        private void PlayerMovement()
+        {
+            int moveX = 0;
+            int moveY = 0;
+            ConsoleKeyInfo key = Console.ReadKey(true);
+            switch (key.Key)
+            {
+                case ConsoleKey.UpArrow:
+                    moveY = -1;
+                    break;
+                case ConsoleKey.DownArrow:
+                    moveY = 1;
+                    break;
+                case ConsoleKey.LeftArrow:
+                    moveX = -1;
+                    break;
+                case ConsoleKey.RightArrow:
+                    moveX = 1;
+                    break;
+                case ConsoleKey.Escape:
+                    Raylib.CloseWindow();
+                    Raylib.UnloadRenderTexture(game_screen);
+                    break;
+                default:
+                    break;
+            }
+            int index = (int)player.position.X + moveX + ((int)player.position.Y + moveY) * level01.mapWidth;
+            int wallCheck = level01.layers[0].mapTiles[index];
+            if (wallCheck != 2)
+            {
+                player.Move(moveX, moveY);
+            }
         }
         private void ShowMoney(int money)
         {
-            Console.SetCursorPosition(10, 0);
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine($"Gold: {money}");
+            Raylib.DrawRectangle(10 * tileSize, 0, tileSize * 10, tileSize, Raylib.BLACK);
+            Raylib.DrawText($"Gold: {money}", 10 * tileSize, 0, tileSize, Raylib.YELLOW);
         }
     }
 }

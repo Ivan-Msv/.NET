@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Numerics;
+using ZeroElectric.Vinculum;
 
 namespace Rogue
 {
@@ -25,13 +26,13 @@ namespace Rogue
         public Race pRace;
         public Class pClass;
 
-        public Vector2 playerPos;
+        public Vector2 position;
         public int currentMoney;
 
         private char image;
-        private ConsoleColor color;
+        private Color color;
 
-        public PlayerCharacter(char image, ConsoleColor color)
+        public PlayerCharacter(char image, Color color)
         {
             this.image = image;
             this.color = color;
@@ -39,21 +40,22 @@ namespace Rogue
 
         public void Move(int moveX, int moveY)
         {
-            playerPos.X += moveX;
-            playerPos.Y += moveY;
-            playerPos.X = Math.Min(Math.Max(playerPos.X, 0), Console.WindowWidth - 1);
-            playerPos.Y = Math.Min(Math.Max(playerPos.Y, 0), Console.WindowHeight - 1);
+            position.X += moveX;
+            position.Y += moveY;
+            position.X = Math.Min(Math.Max(position.X, 0), Console.WindowWidth - 1);
+            position.Y = Math.Min(Math.Max(position.Y, 0), Console.WindowHeight - 1);
         }
 
         public void Draw()
         {
-            Console.ForegroundColor = color;
-            Console.SetCursorPosition(Convert.ToInt32(playerPos.X), Convert.ToInt32(playerPos.Y));
-            Console.Write(image);
+            int convertedX = Convert.ToInt32(position.X * Game.tileSize);
+            int convertedY = Convert.ToInt32(position.Y * Game.tileSize);
+            Raylib.DrawRectangle(convertedX, convertedY, Game.tileSize, Game.tileSize, Raylib.BLACK);
+            Raylib.DrawText(image.ToString(), convertedX, convertedY, Game.tileSize, color);
         }
         public int StartingMoney(Race race)
         {
-            int money = 0;
+            int money;
             switch (race)
             {
                 case Race.Human:
