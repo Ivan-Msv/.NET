@@ -22,6 +22,15 @@ namespace Rogue
         int game_width;
         int game_height;
         RenderTexture game_screen;
+
+        private bool trollDefeated;
+
+        Sound thiefLaugh;
+        Sound defeatedTroll;
+        Sound wallKnock;
+        Sound itemPickup;
+
+        bool canMove = true;
         public void Run()
         {
             Init();
@@ -41,6 +50,17 @@ namespace Rogue
 
             Raylib.InitWindow(screen_width, screen_height, "Rogue");
             mapImage = Raylib.LoadTexture("data/images/tilemap.png");
+
+            Raylib.InitAudioDevice();
+            trollDefeated = false;
+            defeatedTroll = Raylib.LoadSound("data/audio/defeated_troll.wav");
+            thiefLaugh = Raylib.LoadSound("data/audio/thief_laugh.mp3");
+            wallKnock = Raylib.LoadSound("data/audio/wallknock.mp3");
+            itemPickup = Raylib.LoadSound("data/audio/item_pickup.wav");
+
+            Raylib.SetSoundVolume(thiefLaugh, 0.5f);
+            Raylib.SetSoundVolume(defeatedTroll, 0.5f);
+            Raylib.SetSoundVolume(itemPickup, 0.4f);
 
             ClassTexture();
             EnemyAndItemTexture();
@@ -65,8 +85,13 @@ namespace Rogue
                     break;
                 }
             }
-            Raylib.CloseWindow();
             Raylib.UnloadRenderTexture(game_screen);
+            Raylib.UnloadSound(thiefLaugh);
+            Raylib.UnloadSound(defeatedTroll);
+            Raylib.UnloadSound(wallKnock);
+            Raylib.UnloadSound(itemPickup);
+            Raylib.CloseAudioDevice();
+            Raylib.CloseWindow();
             Console.Clear();
         }
         private PlayerCharacter CreateCharacter()
@@ -199,15 +224,12 @@ namespace Rogue
             {
                 case Class.Knight:
                     player.SetPlayerImageAndIndex(mapImage, 12, new Vector2(0, 8));
-                    Console.WriteLine("Knight?");
                     break;
                 case Class.Archer:
                     player.SetPlayerImageAndIndex(mapImage, 12, new Vector2(1, 7));
-                    Console.WriteLine("archer");
                     break;
                 case Class.Mage:
                     player.SetPlayerImageAndIndex(mapImage, 12, new Vector2(0, 7));
-                    Console.WriteLine("mage");
                     break;
             }
         }
@@ -218,10 +240,10 @@ namespace Rogue
                 switch (enemy.name.ToLower())
                 {
                     case "thief":
-                        enemy.SetEnemyImageAndIndex(mapImage, imagesPerRow, new Vector2(4, 8));
+                        enemy.SetEnemyImageAndIndex(mapImage, imagesPerRow, (int)MapTile.Thief);
                         break;
                     case "troll":
-                        enemy.SetEnemyImageAndIndex(mapImage, imagesPerRow, new Vector2(1, 9));
+                        enemy.SetEnemyImageAndIndex(mapImage, imagesPerRow, (int)MapTile.Troll);
                         break;
                 }
             }
@@ -229,11 +251,11 @@ namespace Rogue
             {
                 switch (item.name.ToLower())
                 {
-                    case "pickaxe":
-                        item.SetItemImageAndIndex(mapImage, imagesPerRow, new Vector2(9, 9));
+                    case "potion":
+                        item.SetItemImageAndIndex(mapImage, imagesPerRow, (int)MapTile.Potion);
                         break;
                     case "sword":
-                        item.SetItemImageAndIndex(mapImage, imagesPerRow, new Vector2(8, 8));
+                        item.SetItemImageAndIndex(mapImage, imagesPerRow, (int)MapTile.Sword);
                         break;
                 }
             }
@@ -255,34 +277,61 @@ namespace Rogue
 
             Enemy enemyScan = level01.GetEnemyAt(player.position);
             Item itemScan = level01.GetItemAt(player.position);
+            int yText = game_height - 50;
 
             if (enemyScan != null)
             {
-                switch (enemyScan.name.ToLower())
+                string name = enemyScan.name.ToLower();
+                if (name == "thief")
                 {
-                    case "troll":
-                        Raylib.DrawText($"You hit an enemy: <{enemyScan.name}>", 0, 7 * tileSize, tileSize, color);
-                        break;
-                    case "thief":
-                        Raylib.DrawText($"You encounter a <{enemyScan.name}>. \nHe steals half of your money.", 0, 7 * tileSize, tileSize, color);
+                    canMove = false;
+                    Raylib.DrawText($"You encounter a <{enemyScan.name}>. \nHe steals half of your money and runs away. \n [Enter to continue]", 0, yText, tileSize, color);
+                    if (Raylib.IsKeyDown(KeyboardKey.KEY_ENTER))
+                    {
+                        Raylib.PlaySound(thiefLaugh);
                         player.currentMoney /= 2;
-                        level01.DeleteEnemyOrItem(enemyScan); // only deletes the enemy itself but the icon ($) stays
-                        break;
+                        level01.enemies.Remove(enemyScan);
+                        canMove = true;
+                    }
+                }
+                else if (name == "troll")
+                {
+                    canMove = false;
+                    Raylib.DrawText($"You hit an enemy: <{enemyScan.name}>, \n He dies rather quickly... \n [Enter to continue]", 0, yText, tileSize, color);
+                    switch (trollDefeated)
+                    {
+                        case false:
+                            Raylib.PlaySound(defeatedTroll);
+                            trollDefeated = true;
+                            break;
+                    }
+                    if (Raylib.IsKeyDown(KeyboardKey.KEY_ENTER))
+                    {
+                        level01.enemies.Remove(enemyScan);
+                        canMove = true;
+                    }
                 }
             }
             else if (itemScan != null)
             {
-                Raylib.DrawText($"You find an item: <{itemScan.name}>", 0, 7 * tileSize, tileSize, color);
+                canMove = false;
+                Raylib.DrawText($"You find an item: <{itemScan.name}> \n [Enter to continue]", 0, yText, tileSize, color);
+                if (Raylib.IsKeyDown(KeyboardKey.KEY_ENTER))
+                {
+                    Raylib.PlaySound(itemPickup);
+                    level01.items.Remove(itemScan);
+                    canMove = true;
+                }
             }
             else
             {
-                Raylib.DrawRectangle(0, 7 * tileSize, tileSize * 20, tileSize * 2, Raylib.BLACK);
+                Raylib.DrawRectangle(0, yText, tileSize * 30, tileSize * 3, Raylib.BLACK);
             }
         }
         private void DrawGameToTexture()
         {
             Raylib.BeginTextureMode(game_screen);
-            level01.Draw(mapImage, 0);
+            level01.Draw(mapImage);
             ScanEnemiesAndItems();
             DrawEnemyAndItems();
             player.Draw();
@@ -307,30 +356,38 @@ namespace Rogue
         }
         private void PlayerMovement()
         {
-            int moveX = 0;
-            int moveY = 0;
-            if (Raylib.IsKeyPressed(KeyboardKey.KEY_UP))
+            if (canMove)
             {
-                moveY = -1;
-            }
-            else if (Raylib.IsKeyPressed(KeyboardKey.KEY_DOWN))
-            {
-                moveY = 1;
-            }
-            else if (Raylib.IsKeyPressed(KeyboardKey.KEY_LEFT))
-            {
-                moveX = -1;
-            }
-            else if (Raylib.IsKeyPressed(KeyboardKey.KEY_RIGHT))
-            {
-                moveX = 1;
-            }
+                int moveX = 0;
+                int moveY = 0;
+                if (Raylib.IsKeyPressed(KeyboardKey.KEY_UP))
+                {
+                    moveY = -1;
+                }
+                else if (Raylib.IsKeyPressed(KeyboardKey.KEY_DOWN))
+                {
+                    moveY = 1;
+                }
+                else if (Raylib.IsKeyPressed(KeyboardKey.KEY_LEFT))
+                {
+                    moveX = -1;
+                }
+                else if (Raylib.IsKeyPressed(KeyboardKey.KEY_RIGHT))
+                {
+                    moveX = 1;
+                }
 
-            int index = (int)player.position.X + moveX + ((int)player.position.Y + moveY) * level01.mapWidth;
-            int wallCheck = level01.layers[0].mapTiles[index];
-            if (wallCheck != 2)
-            {
-                player.Move(moveX, moveY);
+                int index = (int)player.position.X + moveX + ((int)player.position.Y + moveY) * level01.tileMap.layers[0].width;
+                MapTile tile = level01.GetTileAt(index);
+
+                if (tile == MapTile.Floor)
+                {
+                    player.Move(moveX, moveY);
+                }
+                else
+                {
+                    Raylib.PlaySound(wallKnock);
+                }
             }
         }
         private void ShowMoney(int money)

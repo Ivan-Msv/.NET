@@ -9,13 +9,27 @@ using TurboMapReader;
 
 namespace Rogue
 {
+    public enum MapTile : int
+    {
+        Floor = 1,
+        StoneLUCorner = 58,
+        StoneRUCorner = 60,
+        StoneWall = 41,
+        StoneWindowWall = 29,
+        BrokenStoneWall = 15,
+        VerticalStoneWall = 59,
+
+        Thief = 87,
+        Troll = 110,
+
+        Sword = 105,
+        Potion = 115,
+    }
     class Map
     {
         public int mapWidth;
         public MapLayer[] layers { get; set; }
         public int[] mapTiles;
-        public MapLayer itemLayer;
-        public MapLayer enemyLayer;
         public TiledMap tileMap { get; private set; }
 
         public List<Enemy> enemies;
@@ -26,73 +40,65 @@ namespace Rogue
             this.tileMap = map;
         }
 
-        //public void Draw()
+        //public void OldDraw(Texture image, int layerIndex)
         //{
-        //    groundLayer = layers[0];
-        //    Console.ForegroundColor = ConsoleColor.Gray;
         //    int map_start_row = 0;
         //    int map_start_col = 0;
 
-        //    for (int row = 0; row < groundLayer.mapTiles.Length / mapWidth; row++)
+        //    for (int row = 0; row < layers[0].mapTiles.Length / mapWidth; row++)
         //    {
         //        for (int col = 0; col < mapWidth; col++)
         //        {
         //            int mapIndex = row * mapWidth + col;
 
-        //            int tileId = groundLayer.mapTiles[mapIndex];
-
-        //            Console.SetCursorPosition(map_start_col + col, map_start_row + row);
+        //            int tileId = layers[layerIndex].mapTiles[mapIndex];
+        //            int posX = (map_start_col + col) * Game.tileSize;
+        //            int posY = (map_start_row + row) * Game.tileSize;
+        //            Vector2 mapPos = new Vector2(posX, posY);
+        //            int atlasIndex = 0;
 
         //            switch (tileId)
         //            {
         //                case 1:
-        //                    Console.Write(".");
+        //                    atlasIndex = 1 + 4 * Game.imagesPerRow;
         //                    break;
         //                case 2:
-        //                    Console.Write("#");
+        //                    atlasIndex = 4 + 3 * Game.imagesPerRow;
         //                    break;
         //                default:
-        //                    Console.Write(" ");
         //                    break;
         //            }
+
+        //            int imagePixelX = atlasIndex % Game.imagesPerRow * Game.tileSize;
+        //            int imagePixelY = atlasIndex / Game.imagesPerRow * Game.tileSize;
+        //            Rectangle mapRect = new Rectangle(imagePixelX, imagePixelY, Game.tileSize, Game.tileSize);
+
+        //            Raylib.DrawTextureRec(image, mapRect, mapPos, Raylib.WHITE);
         //        }
         //    }
-        //} // OLD DRAW
+        //}
 
-        public void Draw(Texture image, int layerIndex)
+        public void Draw(Texture image)
         {
-            int map_start_row = 0;
-            int map_start_col = 0;
-
-            for (int row = 0; row < layers[0].mapTiles.Length / mapWidth; row++)
+            TurboMapReader.MapLayer tileGround = tileMap.layers[0];
+            for (int row = 0; row < tileGround.height; row++)
             {
-                for (int col = 0; col < mapWidth; col++)
+                for (int col = 0; col < tileGround.width; col++)
                 {
-                    int mapIndex = row * mapWidth + col;
-
-                    int tileId = layers[layerIndex].mapTiles[mapIndex];
-                    int posX = (map_start_col + col) * Game.tileSize;
-                    int posY = (map_start_row + row) * Game.tileSize;
-                    Vector2 mapPos = new Vector2(posX, posY);
-                    int atlasIndex = 0;
-
-                    switch (tileId)
+                    int mapIndex = row * tileGround.width + col;
+                    Vector2 mapPos = new Vector2(col, row);
+                    int tileId = tileMap.layers[0].data[mapIndex];
+                    if (tileId == 0)
                     {
-                        case 1:
-                            atlasIndex = 1 + 4 * Game.imagesPerRow;
-                            break;
-                        case 2:
-                            atlasIndex = 4 + 3 * Game.imagesPerRow;
-                            break;
-                        default:
-                            break;
+                        continue;
                     }
+                    int tileIndex = tileId - 1;
 
-                    int imagePixelX = atlasIndex % Game.imagesPerRow * Game.tileSize;
-                    int imagePixelY = atlasIndex / Game.imagesPerRow * Game.tileSize;
+                    int imagePixelX = tileIndex % Game.imagesPerRow * Game.tileSize;
+                    int imagePixelY = tileIndex / Game.imagesPerRow * Game.tileSize;
                     Rectangle mapRect = new Rectangle(imagePixelX, imagePixelY, Game.tileSize, Game.tileSize);
 
-                    Raylib.DrawTextureRec(image, mapRect, mapPos, Raylib.WHITE);
+                    Raylib.DrawTextureRec(image, mapRect, mapPos * Game.tileSize, Raylib.WHITE);
                 }
             }
         }
@@ -101,52 +107,46 @@ namespace Rogue
             enemies = new List<Enemy>();
             items = new List<Item>();
 
-            itemLayer = layers[1];
-            enemyLayer = layers[2];
+            TurboMapReader.MapLayer itemLayer = tileMap.layers[1];
+            TurboMapReader.MapLayer enemyLayer = tileMap.layers[2];
 
-            int[] enemyTiles = enemyLayer.mapTiles;
-            int[] itemTiles = itemLayer.mapTiles;
+            int[] enemyTiles = enemyLayer.data;
+            int[] itemTiles = itemLayer.data;
 
-            int mapHeight = enemyTiles.Length / mapWidth;
+            int mapHeight = enemyLayer.height;
             for (int y = 0; y < mapHeight; y++)
             {
-                for (int x = 0; x < mapWidth; x++)
+                for (int x = 0; x < enemyLayer.width; x++)
                 {
                     Vector2 enemyPosition = new Vector2(x, y);
                     Vector2 itemPosition = new Vector2(x, y);
-                    int index = x + y * mapWidth;
+                    int index = x + y * enemyLayer.width;
                     int enemyTileId = enemyTiles[index];
                     int itemTileId = itemTiles[index];
                     switch(enemyTileId)
                     {
                         case 0:
                             break;
-                        case 1:
+                        case (int)MapTile.Thief:
                             enemies.Add(new Enemy("Thief", enemyPosition));
                             break;
-                        case 2:
+                        case (int)MapTile.Troll:
                             enemies.Add(new Enemy("Troll", enemyPosition));
                             break;
                     }
-                    switch(itemTileId)
+                    switch (itemTileId)
                     {
                         case 0:
                             break;
-                        case 1:
+                        case (int)MapTile.Sword:
                             items.Add(new Item("Sword", itemPosition));
                             break;
-                        case 2:
-                            items.Add(new Item("Pickaxe", itemPosition));
-                            break;
-                        default:
+                        case (int)MapTile.Potion:
+                            items.Add(new Item("Potion", itemPosition));
                             break;
                     }
                 }
             }
-        }
-        public void DeleteEnemyOrItem(Enemy enemyScan)
-        {
-            enemies.Remove(enemyScan);
         }
         public Enemy GetEnemyAt(Vector2 pos)
         {
@@ -192,6 +192,11 @@ namespace Rogue
             {
                 return null;
             }
+        }
+        public MapTile GetTileAt(int index)
+        {
+            MapTile tileName = (MapTile)tileMap.layers[0].data[index];
+            return tileName;
         }
     }
 }

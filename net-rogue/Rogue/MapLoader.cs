@@ -11,16 +11,15 @@ namespace Rogue
 {
     internal class MapLoader
     {
-
         public Map ReadMapFromFile(string fileName)
         {
             TiledMap loadedTileMap = TurboMapReader.MapReader.LoadMapFromFile(fileName);
             return CreateMapObject(loadedTileMap);
         }
-
         private Map CreateMapObject(TiledMap loadedTileMap)
         {
             Map map = new Map(loadedTileMap);
+            map.LoadEnemiesAndItems();
             return map;
         }
     }

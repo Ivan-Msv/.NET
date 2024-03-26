@@ -24,16 +24,13 @@ namespace Rogue
 
         public void Draw()
         {
-            int convertedX = Convert.ToInt32(position.X * Game.tileSize);
-            int convertedY = Convert.ToInt32(position.Y * Game.tileSize);
-
             Rectangle imageRect = new Rectangle(imagePixelX, imagePixelY, Game.tileSize, Game.tileSize);
             Raylib.DrawTextureRec(image, imageRect, position * Game.tileSize, Raylib.WHITE);
         }
 
-        public void SetEnemyImageAndIndex(Texture atlasImage, int imagesPerRow, Vector2 position)
+        public void SetEnemyImageAndIndex(Texture atlasImage, int imagesPerRow, int index)
         {
-            int index = (int)position.X + (int)position.Y * imagesPerRow;
+            index--;
             image = atlasImage;
             imagePixelX = (index % imagesPerRow) * Game.tileSize;
             imagePixelY = (index / imagesPerRow) * Game.tileSize;
