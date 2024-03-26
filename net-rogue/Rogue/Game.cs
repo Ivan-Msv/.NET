@@ -36,7 +36,7 @@ namespace Rogue
             CreateCharacter();
 
             MapLoader loader = new MapLoader();
-            level01 = loader.ReadMapFromFile("Maps/level01.json");
+            level01 = loader.ReadMapFromFile("Maps/RogueTiled.tmj");
 
 
             Raylib.InitWindow(screen_width, screen_height, "Rogue");

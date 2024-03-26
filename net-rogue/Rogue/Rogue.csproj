@@ -68,4 +68,7 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="Raylib-CSharp-Vinculum" Version="5.0.1" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\TurboMapReader\TurboMapReader.csproj" />
+  </ItemGroup>
 </Project>

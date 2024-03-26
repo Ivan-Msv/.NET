@@ -54,7 +54,6 @@ namespace Rogue
             int convertedY = Convert.ToInt32(position.Y * Game.tileSize);
 
             Rectangle imageRect = new Rectangle(imagePixelX, imagePixelY, Game.tileSize, Game.tileSize);
-            Raylib.DrawRectangle(convertedX, convertedY, Game.tileSize, Game.tileSize, Raylib.BLACK);
             Raylib.DrawTextureRec(image, imageRect, position * Game.tileSize, Raylib.WHITE);
         }
         public int StartingMoney(Race race)

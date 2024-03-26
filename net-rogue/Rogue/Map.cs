@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Numerics;
 using ZeroElectric.Vinculum;
+using TurboMapReader;
 
 namespace Rogue
 {
@@ -15,15 +16,19 @@ namespace Rogue
         public int[] mapTiles;
         public MapLayer itemLayer;
         public MapLayer enemyLayer;
+        public TiledMap tileMap { get; private set; }
 
         public List<Enemy> enemies;
         public List<Item> items;
 
+        public Map(TiledMap map)
+        {
+            this.tileMap = map;
+        }
+
         //public void Draw()
         //{
         //    groundLayer = layers[0];
-        //    itemLayer = layers[1];
-        //    enemyLayer = layers[2];
         //    Console.ForegroundColor = ConsoleColor.Gray;
         //    int map_start_row = 0;
         //    int map_start_col = 0;
@@ -35,33 +40,8 @@ namespace Rogue
         //            int mapIndex = row * mapWidth + col;
 
         //            int tileId = groundLayer.mapTiles[mapIndex];
-        //            int itemId = itemLayer.mapTiles[mapIndex];
-        //            int enemyId = enemyLayer.mapTiles[mapIndex];
 
         //            Console.SetCursorPosition(map_start_col + col, map_start_row + row);
-        //            switch (itemId)
-        //            {
-        //                case 1:
-        //                    Console.Write("?");
-        //                    break;
-        //                case 2:
-        //                    Console.Write("!");
-        //                    break;
-        //                default:
-        //                    break;
-        //            }
-
-        //            switch (enemyId)
-        //            {
-        //                case 1:
-        //                    Console.Write("$");
-        //                    break;
-        //                case 2:
-        //                    Console.Write("O");
-        //                    break;
-        //                default:
-        //                    break;
-        //            }
 
         //            switch (tileId)
         //            {
@@ -93,28 +73,29 @@ namespace Rogue
                     int tileId = layers[layerIndex].mapTiles[mapIndex];
                     int posX = (map_start_col + col) * Game.tileSize;
                     int posY = (map_start_row + row) * Game.tileSize;
-                    int tileIndex = tileId - 1;
-                    Rectangle mapRect = new Rectangle(posX, posY, Game.tileSize, Game.tileSize);
                     Vector2 mapPos = new Vector2(posX, posY);
+                    int atlasIndex = 0;
 
                     switch (tileId)
                     {
                         case 1:
-                            Raylib.DrawRectangle(posX, posY, Game.tileSize, Game.tileSize, Raylib.BLACK);
-                            Raylib.DrawTextureRec(image, mapRect, mapPos, Raylib.WHITE);
+                            atlasIndex = 1 + 4 * Game.imagesPerRow;
                             break;
                         case 2:
-                            Raylib.DrawRectangle(posX, posY, Game.tileSize, Game.tileSize, Raylib.BLACK);
-                            Raylib.DrawTextureRec(image, mapRect, mapPos, Raylib.WHITE);
+                            atlasIndex = 4 + 3 * Game.imagesPerRow;
                             break;
                         default:
                             break;
                     }
-                    // currently doesnt know how to draw specific texture, fix that. otherwise works ? idk
+
+                    int imagePixelX = atlasIndex % Game.imagesPerRow * Game.tileSize;
+                    int imagePixelY = atlasIndex / Game.imagesPerRow * Game.tileSize;
+                    Rectangle mapRect = new Rectangle(imagePixelX, imagePixelY, Game.tileSize, Game.tileSize);
+
+                    Raylib.DrawTextureRec(image, mapRect, mapPos, Raylib.WHITE);
                 }
             }
         }
-
         public void LoadEnemiesAndItems()
         {
             enemies = new List<Enemy>();
