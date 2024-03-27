@@ -48,6 +48,9 @@
     <None Update="data\audio\wallknock.mp3">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="data\fonts\Adventurer.ttf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="data\images\tilemap.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

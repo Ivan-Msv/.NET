@@ -22,7 +22,7 @@ namespace Rogue
         int game_width;
         int game_height;
         RenderTexture game_screen;
-
+        ZeroElectric.Vinculum.Font game_font;
         private bool trollDefeated;
 
         Sound thiefLaugh;
@@ -50,6 +50,8 @@ namespace Rogue
 
             Raylib.InitWindow(screen_width, screen_height, "Rogue");
             mapImage = Raylib.LoadTexture("data/images/tilemap.png");
+            game_font = Raylib.LoadFontEx("data/fonts/Adventurer.ttf", 16, 0);
+
 
             Raylib.InitAudioDevice();
             trollDefeated = false;
@@ -61,6 +63,7 @@ namespace Rogue
             Raylib.SetSoundVolume(thiefLaugh, 0.5f);
             Raylib.SetSoundVolume(defeatedTroll, 0.5f);
             Raylib.SetSoundVolume(itemPickup, 0.4f);
+
 
             ClassTexture();
             EnemyAndItemTexture();
@@ -86,6 +89,7 @@ namespace Rogue
                 }
             }
             Raylib.UnloadRenderTexture(game_screen);
+            Raylib.UnloadFont(game_font);
             Raylib.UnloadSound(thiefLaugh);
             Raylib.UnloadSound(defeatedTroll);
             Raylib.UnloadSound(wallKnock);
@@ -277,7 +281,8 @@ namespace Rogue
 
             Enemy enemyScan = level01.GetEnemyAt(player.position);
             Item itemScan = level01.GetItemAt(player.position);
-            int yText = game_height - 50;
+            Vector2 textPos = new Vector2(0, game_height - 50);
+            string text;
 
             if (enemyScan != null)
             {
@@ -285,7 +290,9 @@ namespace Rogue
                 if (name == "thief")
                 {
                     canMove = false;
-                    Raylib.DrawText($"You encounter a <{enemyScan.name}>. \nHe steals half of your money and runs away. \n [Enter to continue]", 0, yText, tileSize, color);
+                    text = $"You encounter a <{enemyScan.name}>.\nHe steals half of your money and runs away.\n[Enter to continue]";
+
+                    Raylib.DrawTextEx(game_font, text, textPos, game_font.baseSize, 0, color);
                     if (Raylib.IsKeyDown(KeyboardKey.KEY_ENTER))
                     {
                         Raylib.PlaySound(thiefLaugh);
@@ -297,7 +304,8 @@ namespace Rogue
                 else if (name == "troll")
                 {
                     canMove = false;
-                    Raylib.DrawText($"You hit an enemy: <{enemyScan.name}>, \n He dies rather quickly... \n [Enter to continue]", 0, yText, tileSize, color);
+                    text = $"You hit an enemy: <{enemyScan.name}>,\nHe dies rather quickly...\n[Enter to continue]";
+                    Raylib.DrawTextEx(game_font, text, textPos, game_font.baseSize, 0, color);
                     switch (trollDefeated)
                     {
                         case false:
@@ -315,7 +323,8 @@ namespace Rogue
             else if (itemScan != null)
             {
                 canMove = false;
-                Raylib.DrawText($"You find an item: <{itemScan.name}> \n [Enter to continue]", 0, yText, tileSize, color);
+                text = $"You find an item: <{itemScan.name}> \n[Enter to continue]";
+                Raylib.DrawTextEx(game_font, text, textPos, game_font.baseSize, 0, color);
                 if (Raylib.IsKeyDown(KeyboardKey.KEY_ENTER))
                 {
                     Raylib.PlaySound(itemPickup);
@@ -325,7 +334,7 @@ namespace Rogue
             }
             else
             {
-                Raylib.DrawRectangle(0, yText, tileSize * 30, tileSize * 3, Raylib.BLACK);
+                Raylib.DrawRectangle((int)textPos.X, (int)textPos.Y, tileSize * 30, tileSize * 3, Raylib.BLACK);
             }
         }
         private void DrawGameToTexture()
