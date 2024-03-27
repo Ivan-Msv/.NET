@@ -49,9 +49,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="data\images\tilemap.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="data\images\tilemap1.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Maps\level01.json">
@@ -90,6 +87,6 @@
     <PackageReference Include="Raylib-CSharp-Vinculum" Version="5.0.1" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\TurboMapReader\TurboMapReader.csproj" />
+    <ProjectReference Include="C:\Users\s2200853\OneDrive - Business College Helsinki\Desktop\.NET\net-rogue\TurboMapReader\TurboMapReader.csproj" />
   </ItemGroup>
 </Project>
