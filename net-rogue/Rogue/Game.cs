@@ -5,10 +5,15 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Numerics;
 using ZeroElectric.Vinculum;
-using static System.Net.Mime.MediaTypeNames;
+using RayGuiCreator;
+using System.Reflection.Emit;
 
 namespace Rogue
 {
+    enum GameState
+    {
+        MainMenu, GameLoop, CharacterCreation
+    }
     class Game
     {
         PlayerCharacter player;
@@ -30,6 +35,8 @@ namespace Rogue
         Sound wallKnock;
         Sound itemPickup;
 
+        GameState currentGameState;
+
         bool canMove = true;
         public void Run()
         {
@@ -42,16 +49,15 @@ namespace Rogue
             Console.WindowWidth = 100;
             Console.WindowHeight = 26;
 
-            CreateCharacter();
-
             MapLoader loader = new MapLoader();
             level01 = loader.ReadMapFromFile("Maps/RogueTiled.tmj");
-
 
             Raylib.InitWindow(screen_width, screen_height, "Rogue");
             mapImage = Raylib.LoadTexture("data/images/tilemap.png");
             game_font = Raylib.LoadFontEx("data/fonts/Adventurer.ttf", 16, 0);
 
+
+            currentGameState = GameState.MainMenu;
 
             Raylib.InitAudioDevice();
             trollDefeated = false;
@@ -64,9 +70,14 @@ namespace Rogue
             Raylib.SetSoundVolume(defeatedTroll, 0.5f);
             Raylib.SetSoundVolume(itemPickup, 0.4f);
 
+<<<<<<< Updated upstream
 
             ClassTexture();
             EnemyAndItemTexture();
+=======
+            //ClassTexture();
+            //EnemyAndItemTexture();
+>>>>>>> Stashed changes
 
             Raylib.SetWindowState(ConfigFlags.FLAG_WINDOW_RESIZABLE);
             game_width = 480;
@@ -81,8 +92,19 @@ namespace Rogue
         {
             while (!Raylib.WindowShouldClose())
             {
-                DrawGameToTexture();
-                PlayerMovement();
+                switch (currentGameState)
+                {
+                    case GameState.MainMenu:
+                        DrawMainMenu();
+                        break;
+                    case GameState.GameLoop:
+                        DrawGameToTexture();
+                        PlayerMovement();
+                        break;
+                    case GameState.CharacterCreation:
+                        CreateCharacter();
+                        break;
+                }
                 if (Raylib.IsKeyPressed(KeyboardKey.KEY_ESCAPE))
                 {
                     break;
@@ -101,11 +123,14 @@ namespace Rogue
         private PlayerCharacter CreateCharacter()
         {
             player = new PlayerCharacter(Raylib.GREEN);
-            player.pName = AskName();
+            player.pName = AskNameVisual();
             player.pRace = AskRace();
             player.pClass = AskClass();
             player.position = new Vector2(1, 1);
             player.currentMoney = player.StartingMoney(player.pRace);
+
+            ClassTexture();
+            EnemyAndItemTexture();
             return player;
         }
         private static string AskName()
@@ -140,6 +165,25 @@ namespace Rogue
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine("Name too short, try again.");
                 }
+            }
+        }
+        private static string AskNameVisual()
+        {
+            TextBoxEntry nameEntry = new TextBoxEntry(500);
+            string wrongName = null;
+            while (true)
+            {
+                Raylib.BeginDrawing();
+                Raylib.ClearBackground(Raylib.BLACK);
+                MenuCreator characterCreator = new MenuCreator(Raylib.GetScreenWidth() / 3, Raylib.GetScreenHeight() / 4, 20, 40, 5);
+                characterCreator.Label("What is your name?");
+                characterCreator.TextBox(nameEntry);
+                if (characterCreator.Button("Confirm"))
+                {
+                    wrongName = $"test {nameEntry}";
+                }
+                characterCreator.Label(wrongName); // korjaa huomen
+                Raylib.EndDrawing();
             }
         }
         private static Race AskRace()
@@ -399,7 +443,41 @@ namespace Rogue
                 }
             }
         }
-        private void ShowMoney(int money)
+        public void DrawMainMenu()
+        {
+            // Tyhjennä ruutu ja aloita piirtäminen
+            Raylib.BeginDrawing();
+            Raylib.ClearBackground(Raylib.BLACK);
+
+
+            // Laske ylimmän napin paikka ruudulla.
+            int button_width = 100;
+            int button_height = 20;
+            int button_x = Raylib.GetScreenWidth() / 2 - button_width / 2;
+            int button_y = Raylib.GetScreenHeight() / 2 - button_height / 2;
+
+            MenuCreator c = new MenuCreator(button_x, button_y - button_height * 2, button_height, button_width, button_height);
+            // Piirrä pelin nimi nappien yläpuolelle
+            c.Label("Rogue");
+
+            if (c.Button("Start Game"))
+            {
+                currentGameState = GameState.CharacterCreation;
+            }
+
+            if (c.Button("Options"))
+            {
+                // Go to options somehow
+            }
+
+            if (c.Button("Quit"))
+            {
+                // Quit the game
+            }
+
+            Raylib.EndDrawing();
+        }
+        private static void ShowMoney(int money)
         {
             Raylib.DrawRectangle(10 * tileSize, 0, tileSize * 10, tileSize, Raylib.BLACK);
             Raylib.DrawText($"Gold: {money}", 10 * tileSize, 0, tileSize, Raylib.YELLOW);
