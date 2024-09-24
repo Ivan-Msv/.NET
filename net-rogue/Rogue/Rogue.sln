@@ -6,7 +6,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rogue", "Rogue.csproj", "{F
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TurboMapReader", "..\TurboMapReader\TurboMapReader.csproj", "{94FA6AEF-B1A1-47FB-B12E-1E250E44B3E9}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RayGuiCreator", "..\..\RayGuiCreator\RayGuiCreator\RayGuiCreator.csproj", "{ED5E2006-A00A-4BD6-AB68-24A4BCB8F4FB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RayGuiCreator", "..\RayGuiCreator\RayGuiCreator\RayGuiCreator.csproj", "{9EF8384A-A615-4E75-921C-FFAC8941E852}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -18,21 +18,14 @@ Global
 		{F3A56BA1-AA0B-413E-A5C8-5B992CAD3198}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F3A56BA1-AA0B-413E-A5C8-5B992CAD3198}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F3A56BA1-AA0B-413E-A5C8-5B992CAD3198}.Release|Any CPU.Build.0 = Release|Any CPU
-<<<<<<< Updated upstream
 		{94FA6AEF-B1A1-47FB-B12E-1E250E44B3E9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{94FA6AEF-B1A1-47FB-B12E-1E250E44B3E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{94FA6AEF-B1A1-47FB-B12E-1E250E44B3E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{94FA6AEF-B1A1-47FB-B12E-1E250E44B3E9}.Release|Any CPU.Build.0 = Release|Any CPU
-=======
-		{13884A25-02C7-45A3-A50C-7D421ADB8AC9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{13884A25-02C7-45A3-A50C-7D421ADB8AC9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{13884A25-02C7-45A3-A50C-7D421ADB8AC9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{13884A25-02C7-45A3-A50C-7D421ADB8AC9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{ED5E2006-A00A-4BD6-AB68-24A4BCB8F4FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{ED5E2006-A00A-4BD6-AB68-24A4BCB8F4FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{ED5E2006-A00A-4BD6-AB68-24A4BCB8F4FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{ED5E2006-A00A-4BD6-AB68-24A4BCB8F4FB}.Release|Any CPU.Build.0 = Release|Any CPU
->>>>>>> Stashed changes
+		{9EF8384A-A615-4E75-921C-FFAC8941E852}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9EF8384A-A615-4E75-921C-FFAC8941E852}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9EF8384A-A615-4E75-921C-FFAC8941E852}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9EF8384A-A615-4E75-921C-FFAC8941E852}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

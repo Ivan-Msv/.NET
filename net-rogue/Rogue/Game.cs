@@ -70,14 +70,8 @@ namespace Rogue
             Raylib.SetSoundVolume(defeatedTroll, 0.5f);
             Raylib.SetSoundVolume(itemPickup, 0.4f);
 
-<<<<<<< Updated upstream
-
-            ClassTexture();
-            EnemyAndItemTexture();
-=======
             //ClassTexture();
             //EnemyAndItemTexture();
->>>>>>> Stashed changes
 
             Raylib.SetWindowState(ConfigFlags.FLAG_WINDOW_RESIZABLE);
             game_width = 480;
