@@ -27,7 +27,7 @@ namespace RayGuiCreator
 		/// <param name="width">Minimum width of elements. Text is always made fit horizontally and be fully visible</param>
 		/// <param name="betweenItems">Amount of pixels between items vertically, default 1 px</param>
 		/// <param name="textHeightAdjust">Text height is rowHeight + this value. Default value 0. Negative values make the text smaller</param>
-		public MenuCreator(int x, int y, int rowHeight, int width, int betweenItems = 1, int textHeightAdjust = 0)
+		public MenuCreator(int x, int y, int rowHeight, int width, int betweenItems = 1, int textHeightAdjust = 0, Font? font = null)
 		{
 			drawX = x; 
 			drawY = y;
@@ -37,20 +37,25 @@ namespace RayGuiCreator
 			menuWidth = width;
 			textSize = rowHeight - textHeightAdjust;
 			RayGui.GuiSetStyle((int)GuiControl.DEFAULT, (int)GuiDefaultProperty.TEXT_SIZE, textSize);
-			font = RayGui.GuiGetFont();
+			this.font = font ?? RayGui.GuiGetFont();
+			RayGui.GuiSetFont(this.font);
 			dropDowns = new Stack<MultipleChoiceEntry>();
 		}
-		
+
 		/// <summary>
 		/// Creates a text label.
 		/// </summary>
 		/// <param name="text">Text to be shown</param>
-		public void Label(string text)
+		public void Label(string text, Color? color = null)
 		{
-			Vector2 textWH= GetTextArea(GuiControl.TEXTBOX, text);
-			RayGui.GuiLabel(new Rectangle(drawX, drawY, textWH.X, textWH.Y), text);
+			Color newColor = color ?? Raylib.WHITE;
+			int oldColor = RayGui.GuiGetStyle((int)GuiControl.LABEL, (int)GuiControlProperty.TEXT_COLOR_NORMAL);
+            RayGui.GuiSetStyle((int)GuiControl.LABEL, (int)GuiControlProperty.TEXT_COLOR_NORMAL, Raylib.ColorToInt(newColor));
+            Vector2 textWH = GetTextArea(GuiControl.TEXTBOX, text);
+			RayGui.GuiLabel(new Rectangle(drawX, drawY, textWH.X * 2, textWH.Y), text);
+			RayGui.GuiSetStyle((int)GuiControl.LABEL, (int)GuiControlProperty.TEXT_COLOR_NORMAL, oldColor);
 
-			drawY += (int)textWH.Y + betweenRows;
+            drawY += (int)textWH.Y + betweenRows;
 		}
 
 		/// <summary>

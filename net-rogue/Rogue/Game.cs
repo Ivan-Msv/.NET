@@ -7,6 +7,9 @@ using System.Numerics;
 using ZeroElectric.Vinculum;
 using RayGuiCreator;
 using System.Reflection.Emit;
+using Newtonsoft.Json.Linq;
+using static System.Net.Mime.MediaTypeNames;
+using System.Net.Http.Headers;
 
 namespace Rogue
 {
@@ -117,147 +120,116 @@ namespace Rogue
         private PlayerCharacter CreateCharacter()
         {
             player = new PlayerCharacter(Raylib.GREEN);
-            player.pName = AskNameVisual();
+            player.pName = AskName();
             player.pRace = AskRace();
             player.pClass = AskClass();
             player.position = new Vector2(1, 1);
             player.currentMoney = player.StartingMoney(player.pRace);
 
+            currentGameState = GameState.GameLoop;
+
             ClassTexture();
             EnemyAndItemTexture();
             return player;
         }
-        private static string AskName()
+        private string AskName()
         {
-            Console.ForegroundColor = ConsoleColor.DarkYellow;
-            Console.WriteLine("What is your name?");
-            while (true)
-            {
-                Console.ForegroundColor = ConsoleColor.White;
-                var nameanswer = Console.ReadLine();
-                if (nameanswer.Length >= 3 && nameanswer.Length <= 10 && !nameanswer.Any(char.IsNumber))
-                {
-                    return nameanswer;
-                }
-                else if (nameanswer.Any(char.IsNumber))
-                {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.Write($"Name (");
-                    Console.ForegroundColor = ConsoleColor.White;
-                    Console.Write(nameanswer);
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine(") is not supposed to contain any numbers, try again.");
-                    continue;
-                }
-                else if (nameanswer.Length >= 10)
-                {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("Name too long, try again.");
-                }
-                else
-                {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("Name too short, try again.");
-                }
-            }
-        }
-        private static string AskNameVisual()
-        {
-            TextBoxEntry nameEntry = new TextBoxEntry(500);
+            TextBoxEntry nameEntry = new TextBoxEntry(10);
             string wrongName = null;
             while (true)
             {
+                if (Raylib.WindowShouldClose())
+                {
+                    Raylib.CloseWindow();
+                }
                 Raylib.BeginDrawing();
                 Raylib.ClearBackground(Raylib.BLACK);
-                MenuCreator characterCreator = new MenuCreator(Raylib.GetScreenWidth() / 3, Raylib.GetScreenHeight() / 4, 20, 40, 5);
-                characterCreator.Label("What is your name?");
-                characterCreator.TextBox(nameEntry);
-                if (characterCreator.Button("Confirm"))
+                MenuCreator nameMenu = new MenuCreator(50, Raylib.GetScreenHeight() / 3, 45, 45, 1, 0, game_font);
+                nameMenu.Label("What is your name?", Raylib.YELLOW);
+                nameMenu.TextBox(nameEntry);
+                if (nameMenu.Button("Confirm"))
                 {
-                    wrongName = $"test {nameEntry}";
+                    if (nameEntry.ToString().Any(char.IsNumber))
+                    {
+                        wrongName = $"Name ({nameEntry}) is not supposed to contain any numbers";
+                    }
+                    else if (nameEntry.ToString().Length <= 3)
+                    {
+                        wrongName = $"Name ({nameEntry}) is too short.";
+                    }
+                    else
+                    {
+                        return nameEntry.ToString();
+                    }
                 }
-                characterCreator.Label(wrongName); // korjaa huomen
+                nameMenu.Label(wrongName, Raylib.RED);
                 Raylib.EndDrawing();
             }
         }
-        private static Race AskRace()
+        private Race AskRace()
         {
-            Console.ForegroundColor = ConsoleColor.DarkYellow;
-            Console.WriteLine("Please select your race.");
-            Console.ForegroundColor = ConsoleColor.White;
-            Console.WriteLine("1. Human");
-            Console.WriteLine("2. Elf");
-            Console.WriteLine("3. Goblin");
-
-            int raceAnswer;
+            string[] choices = ["Human", "Elf", "Goblin"];
+            MultipleChoiceEntry raceChoice = new MultipleChoiceEntry(choices);
             while (true)
             {
-                char raceAnswerLine = Console.ReadKey(true).KeyChar;
-                if (int.TryParse(raceAnswerLine.ToString(), out int integer) && Enumerable.Range(1, 3).Contains(integer))
+                if (Raylib.WindowShouldClose())
                 {
-                    raceAnswer = integer;
-                    break;
+                    Raylib.CloseWindow();
                 }
-                else
+                Raylib.BeginDrawing();
+                Raylib.ClearBackground(Raylib.BLACK);
+                MenuCreator raceMenu = new MenuCreator(50, Raylib.GetScreenHeight() / 3, 45, 400, 1, 0, game_font);
+                raceMenu.Label("Please select your race.", Raylib.YELLOW);
+                raceMenu.ToggleGroup(raceChoice);
+                if (RayGui.GuiButton(new Rectangle(50, Raylib.GetScreenHeight() / 3 + 300, 300, 45), "Confirm") == 1)
                 {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("Choose using the numbers.");
-                    Console.ResetColor();
-                    continue;
+                    switch (raceChoice.ToString())
+                    {
+                        case "Human":
+                            return Race.Human;
+                        case "Elf":
+                            return Race.Elf;
+                        case "Goblin":
+                            return Race.Goblin;
+                        default:
+                            Console.WriteLine("Something went wrong...");
+                            return Race.Human;
+                    }
                 }
-            }
-
-            switch (raceAnswer)
-            {
-                case 1:
-                    return Race.Human;
-                case 2:
-                    return Race.Elf;
-                case 3:
-                    return Race.Goblin;
-                default:
-                    Console.WriteLine("Something went wrong...");
-                    return Race.Human;
+                Raylib.EndDrawing();
             }
         }
-        private static Class AskClass()
+        private Class AskClass()
         {
-            Console.ForegroundColor = ConsoleColor.DarkYellow;
-            Console.WriteLine("Please select your class.");
-            Console.ForegroundColor = ConsoleColor.White;
-            Console.WriteLine("1. Knight");
-            Console.WriteLine("2. Archer");
-            Console.WriteLine("3. Mage");
-
-            int classAnswer;
+            string[] choices = ["Knight", "Archer", "Mage"];
+            MultipleChoiceEntry classChoice = new MultipleChoiceEntry(choices);
             while (true)
             {
-                char classAnswerLine = Console.ReadKey(true).KeyChar;
-                if (int.TryParse(classAnswerLine.ToString(), out int integer) && Enumerable.Range(1, 3).Contains(integer))
+                if (Raylib.WindowShouldClose())
                 {
-                    classAnswer = integer;
-                    break;
+                    Raylib.CloseWindow();
                 }
-                else
+                Raylib.BeginDrawing();
+                Raylib.ClearBackground(Raylib.BLACK);
+                MenuCreator classMenu = new MenuCreator(50, Raylib.GetScreenHeight() / 3, 45, 400, 1, 0, game_font);
+                classMenu.Label("Please select your class.", Raylib.YELLOW);
+                classMenu.ToggleGroup(classChoice);
+                if (RayGui.GuiButton(new Rectangle(50, Raylib.GetScreenHeight() / 3 + 250, 300, 45), "Confirm") == 1)
                 {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("Choose using the numbers.");
-                    Console.ResetColor();
-                    continue;
+                    switch (classChoice.ToString())
+                    {
+                        case "Knight":
+                            return Class.Knight;
+                        case "Archer":
+                            return Class.Archer;
+                        case "Mage":
+                            return Class.Mage;
+                        default:
+                            Console.WriteLine("Something went wrong...");
+                            return Class.Mage;
+                    }
                 }
-            }
-
-            switch (classAnswer)
-            {
-                case 1:
-                    return Class.Knight;
-                case 2:
-                    return Class.Archer;
-                case 3:
-                    return Class.Mage;
-                default:
-                    Console.WriteLine("Something went wrong...");
-                    return Class.Knight;
+                Raylib.EndDrawing();
             }
         }
         private void ClassTexture()
@@ -445,8 +417,8 @@ namespace Rogue
 
 
             // Laske ylimmän napin paikka ruudulla.
-            int button_width = 100;
-            int button_height = 20;
+            int button_width = 140;
+            int button_height = 40;
             int button_x = Raylib.GetScreenWidth() / 2 - button_width / 2;
             int button_y = Raylib.GetScreenHeight() / 2 - button_height / 2;
 
