@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "G/09nf3ohGBwXSszwEuI6B4jsfHr3b6++2Qua3op0a9uY1xN6eE6JNuWxSfEC5pfCKbf7tXgr86we8HfKlCwAQ==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\s2200853\\OneDrive - Business College Helsinki\\Desktop\\.NET\\RayLib\\LunarLander\\LunarLander.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\s2200853\\.nuget\\packages\\communitytoolkit.highperformance\\8.1.0\\communitytoolkit.highperformance.8.1.0.nupkg.sha512",
+    "C:\\Users\\s2200853\\.nuget\\packages\\raylib-csharp-vinculum\\5.0.1\\raylib-csharp-vinculum.5.0.1.nupkg.sha512"
+  ],
+  "logs": []
+}

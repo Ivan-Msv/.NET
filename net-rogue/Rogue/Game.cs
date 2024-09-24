@@ -115,7 +115,7 @@ namespace Rogue
             while (true)
             {
                 Console.ForegroundColor = ConsoleColor.White;
-                string nameanswer = Console.ReadLine();
+                var nameanswer = Console.ReadLine();
                 if (nameanswer.Length >= 3 && nameanswer.Length <= 10 && !nameanswer.Any(char.IsNumber))
                 {
                     return nameanswer;
