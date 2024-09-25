@@ -23,7 +23,7 @@ namespace Rogue
         PlayerCharacter player;
         Map level01;
         Texture mapImage;
-        public static readonly int imagesPerRow = 12;
+        public int imagesPerRow { get; private set; } = 12;
         public static readonly int tileSize = 16;
         int screen_width = 1280;
         int screen_height = 720;
@@ -40,10 +40,12 @@ namespace Rogue
         Sound itemPickup;
 
         GameState currentGameState;
+        Stack<GameState> stateStack;
         PauseMenu myPauseMenu;
         OptionsMenu myOptionsMenu;
 
         bool canMove = true;
+        Random random = new Random();
         public void Run()
         {
             Init();
@@ -62,12 +64,17 @@ namespace Rogue
             mapImage = Raylib.LoadTexture("data/images/tilemap.png");
             game_font = Raylib.LoadFontEx("data/fonts/Adventurer.ttf", 16, 0);
 
-
+            stateStack = new Stack<GameState>();
             currentGameState = GameState.MainMenu;
+            stateStack.Push(currentGameState);
             myPauseMenu = new PauseMenu();
             myOptionsMenu = new OptionsMenu();
 
-            myOptionsMenu.BackButtonPressedEvent += this.OnOptionsBackButtonPressed;
+            myOptionsMenu.BackButtonPressedEvent += this.OnBackButtonPressed;
+            myPauseMenu.BackButtonPressedEvent += this.OnBackButtonPressed;
+            myPauseMenu.MainMenuButtonPressedEvent += this.OnMainMenuButtonPressed;
+            myPauseMenu.RestartButtonPressedEvent += this.OnRestartButtonPressed;
+            myPauseMenu.OptionsMenuPressedEvent += this.OnOptionsButtonPressed;
 
             Raylib.InitAudioDevice();
             trollDefeated = false;
@@ -79,9 +86,6 @@ namespace Rogue
             Raylib.SetSoundVolume(thiefLaugh, 0.5f);
             Raylib.SetSoundVolume(defeatedTroll, 0.5f);
             Raylib.SetSoundVolume(itemPickup, 0.4f);
-
-            //ClassTexture();
-            //EnemyAndItemTexture();
 
             Raylib.SetWindowState(ConfigFlags.FLAG_WINDOW_RESIZABLE);
             game_width = 480;
@@ -140,6 +144,16 @@ namespace Rogue
             player.currentMoney = player.StartingMoney(player.pRace);
 
             currentGameState = GameState.GameLoop;
+            stateStack.Push(currentGameState);
+
+            if (myOptionsMenu.randomizerBool)
+            {
+                imagesPerRow = random.Next(3, 40);
+            }
+            else
+            {
+                imagesPerRow = 12;
+            }
 
             ClassTexture();
             EnemyAndItemTexture();
@@ -377,7 +391,7 @@ namespace Rogue
         private void DrawGameToTexture()
         {
             Raylib.BeginTextureMode(game_screen);
-            level01.Draw(mapImage);
+            level01.Draw(mapImage, imagesPerRow);
             ScanEnemiesAndItems();
             DrawEnemyAndItems();
             player.Draw();
@@ -397,7 +411,14 @@ namespace Rogue
             Rectangle source = new Rectangle(0.0f, 0.0f, game_screen.texture.width, game_screen.texture.height * -1.0f);
             Rectangle destination = new Rectangle((draw_width - (float)game_width * scale) * 0.5f, (draw_height - (float)game_height * scale) * 0.5f, game_width * scale, game_height * scale);
 
-            Raylib.DrawTexturePro(game_screen.texture, source, destination, new Vector2(0,0), 0.0f, Raylib.WHITE);
+            if (myOptionsMenu.screenshakeBool)
+            {
+                Raylib.DrawTexturePro(game_screen.texture, source, destination, new Vector2(random.Next(10), random.Next(10)), 0.0f, Raylib.WHITE);
+            }
+            else
+            {
+                Raylib.DrawTexturePro(game_screen.texture, source, destination, new Vector2(0, 0), 0.0f, Raylib.WHITE);
+            }
             DrawPauseMenuButton();
             Raylib.EndDrawing();
         }
@@ -431,6 +452,10 @@ namespace Rogue
                 {
                     player.Move(moveX, moveY);
                 }
+                else if (tile != MapTile.Floor && myOptionsMenu.noclipBool)
+                {
+                    player.Move(moveX, moveY);
+                }
                 else
                 {
                     Raylib.PlaySound(wallKnock);
@@ -457,11 +482,13 @@ namespace Rogue
             if (c.Button("Start Game"))
             {
                 currentGameState = GameState.CharacterCreation;
+                stateStack.Push(currentGameState);
             }
 
             if (c.Button("Options"))
             {
                 currentGameState = GameState.OptionsMenu;
+                stateStack.Push(currentGameState);
             }
 
             if (c.Button("Quit"))
@@ -472,15 +499,46 @@ namespace Rogue
 
             Raylib.EndDrawing();
         }
-        private void OnOptionsBackButtonPressed(object sender, EventArgs args)
+        private void OnBackButtonPressed(object sender, EventArgs args)
         {
+            stateStack.Pop();
+            currentGameState = stateStack.Peek();
+        }
+        private void OnMainMenuButtonPressed(object sender, EventArgs args)
+        {
+            stateStack.Clear();
             currentGameState = GameState.MainMenu;
+            stateStack.Push(currentGameState);
+        }
+        private void OnRestartButtonPressed(object sender, EventArgs args)
+        {
+            if (myOptionsMenu.randomizerBool)
+            {
+                imagesPerRow = random.Next(3, 40);
+            }
+            else
+            {
+                imagesPerRow = 12;
+            }
+            MapLoader loader = new MapLoader();
+            level01 = loader.ReadMapFromFile("Maps/RogueTiled.tmj");
+            player.position = new Vector2(1, 1);
+            player.currentMoney = player.StartingMoney(player.pRace);
+            EnemyAndItemTexture();
+            stateStack.Pop();
+            currentGameState = stateStack.Peek();
+        }
+        private void OnOptionsButtonPressed(object sender, EventArgs args)
+        {
+            currentGameState = GameState.OptionsMenu;
+            stateStack.Push(currentGameState);
         }
         private void DrawPauseMenuButton()
         {
             if (RayGui.GuiButton(new Rectangle(Raylib.GetScreenWidth() - 270, Raylib.GetScreenHeight() - 80, 270, 80), "Pause Menu") == 1)
             {
                 currentGameState = GameState.PauseMenu;
+                stateStack.Push(currentGameState);
             }
         }
         private void DrawClassImage(string playerClass)

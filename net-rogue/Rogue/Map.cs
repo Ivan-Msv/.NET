@@ -40,45 +40,7 @@ namespace Rogue
             this.tileMap = map;
         }
 
-        //public void OldDraw(Texture image, int layerIndex)
-        //{
-        //    int map_start_row = 0;
-        //    int map_start_col = 0;
-
-        //    for (int row = 0; row < layers[0].mapTiles.Length / mapWidth; row++)
-        //    {
-        //        for (int col = 0; col < mapWidth; col++)
-        //        {
-        //            int mapIndex = row * mapWidth + col;
-
-        //            int tileId = layers[layerIndex].mapTiles[mapIndex];
-        //            int posX = (map_start_col + col) * Game.tileSize;
-        //            int posY = (map_start_row + row) * Game.tileSize;
-        //            Vector2 mapPos = new Vector2(posX, posY);
-        //            int atlasIndex = 0;
-
-        //            switch (tileId)
-        //            {
-        //                case 1:
-        //                    atlasIndex = 1 + 4 * Game.imagesPerRow;
-        //                    break;
-        //                case 2:
-        //                    atlasIndex = 4 + 3 * Game.imagesPerRow;
-        //                    break;
-        //                default:
-        //                    break;
-        //            }
-
-        //            int imagePixelX = atlasIndex % Game.imagesPerRow * Game.tileSize;
-        //            int imagePixelY = atlasIndex / Game.imagesPerRow * Game.tileSize;
-        //            Rectangle mapRect = new Rectangle(imagePixelX, imagePixelY, Game.tileSize, Game.tileSize);
-
-        //            Raylib.DrawTextureRec(image, mapRect, mapPos, Raylib.WHITE);
-        //        }
-        //    }
-        //}
-
-        public void Draw(Texture image)
+        public void Draw(Texture image, int imagesPerRow)
         {
             TurboMapReader.MapLayer tileGround = tileMap.layers[0];
             for (int row = 0; row < tileGround.height; row++)
@@ -94,8 +56,8 @@ namespace Rogue
                     }
                     int tileIndex = tileId - 1;
 
-                    int imagePixelX = tileIndex % Game.imagesPerRow * Game.tileSize;
-                    int imagePixelY = tileIndex / Game.imagesPerRow * Game.tileSize;
+                    int imagePixelX = tileIndex % imagesPerRow * Game.tileSize;
+                    int imagePixelY = tileIndex / imagesPerRow * Game.tileSize;
                     Rectangle mapRect = new Rectangle(imagePixelX, imagePixelY, Game.tileSize, Game.tileSize);
 
                     Raylib.DrawTextureRec(image, mapRect, mapPos * Game.tileSize, Raylib.WHITE);
