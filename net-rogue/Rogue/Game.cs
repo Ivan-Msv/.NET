@@ -10,12 +10,13 @@ using System.Reflection.Emit;
 using Newtonsoft.Json.Linq;
 using static System.Net.Mime.MediaTypeNames;
 using System.Net.Http.Headers;
+using TurboMapReader;
 
 namespace Rogue
 {
     enum GameState
     {
-        MainMenu, GameLoop, CharacterCreation
+        MainMenu, GameLoop, CharacterCreation, OptionsMenu, PauseMenu
     }
     class Game
     {
@@ -39,6 +40,8 @@ namespace Rogue
         Sound itemPickup;
 
         GameState currentGameState;
+        PauseMenu myPauseMenu;
+        OptionsMenu myOptionsMenu;
 
         bool canMove = true;
         public void Run()
@@ -61,6 +64,10 @@ namespace Rogue
 
 
             currentGameState = GameState.MainMenu;
+            myPauseMenu = new PauseMenu();
+            myOptionsMenu = new OptionsMenu();
+
+            myOptionsMenu.BackButtonPressedEvent += this.OnOptionsBackButtonPressed;
 
             Raylib.InitAudioDevice();
             trollDefeated = false;
@@ -91,15 +98,21 @@ namespace Rogue
             {
                 switch (currentGameState)
                 {
+                    case GameState.CharacterCreation:
+                        CreateCharacter();
+                        break;
                     case GameState.MainMenu:
                         DrawMainMenu();
+                        break;
+                    case GameState.OptionsMenu:
+                        myOptionsMenu.DrawMenu(); 
+                        break;
+                    case GameState.PauseMenu:
+                        myPauseMenu.DrawMenu();
                         break;
                     case GameState.GameLoop:
                         DrawGameToTexture();
                         PlayerMovement();
-                        break;
-                    case GameState.CharacterCreation:
-                        CreateCharacter();
                         break;
                 }
                 if (Raylib.IsKeyPressed(KeyboardKey.KEY_ESCAPE))
@@ -138,32 +151,35 @@ namespace Rogue
             string wrongName = null;
             while (true)
             {
-                if (Raylib.WindowShouldClose())
+                if (!Raylib.WindowShouldClose())
+                {
+                    Raylib.BeginDrawing();
+                    Raylib.ClearBackground(Raylib.BLACK);
+                    MenuCreator nameMenu = new MenuCreator(50, Raylib.GetScreenHeight() / 3, 45, 45, 1, 0, game_font);
+                    nameMenu.Label("What is your name?", Raylib.YELLOW);
+                    nameMenu.TextBox(nameEntry);
+                    if (nameMenu.Button("Confirm"))
+                    {
+                        if (nameEntry.ToString().Any(char.IsNumber))
+                        {
+                            wrongName = $"Name ({nameEntry}) is not supposed to contain any numbers";
+                        }
+                        else if (nameEntry.ToString().Length <= 3)
+                        {
+                            wrongName = $"Name ({nameEntry}) is too short.";
+                        }
+                        else
+                        {
+                            return nameEntry.ToString();
+                        }
+                    }
+                    nameMenu.Label(wrongName, Raylib.RED);
+                    Raylib.EndDrawing();
+                }
+                else
                 {
                     Raylib.CloseWindow();
                 }
-                Raylib.BeginDrawing();
-                Raylib.ClearBackground(Raylib.BLACK);
-                MenuCreator nameMenu = new MenuCreator(50, Raylib.GetScreenHeight() / 3, 45, 45, 1, 0, game_font);
-                nameMenu.Label("What is your name?", Raylib.YELLOW);
-                nameMenu.TextBox(nameEntry);
-                if (nameMenu.Button("Confirm"))
-                {
-                    if (nameEntry.ToString().Any(char.IsNumber))
-                    {
-                        wrongName = $"Name ({nameEntry}) is not supposed to contain any numbers";
-                    }
-                    else if (nameEntry.ToString().Length <= 3)
-                    {
-                        wrongName = $"Name ({nameEntry}) is too short.";
-                    }
-                    else
-                    {
-                        return nameEntry.ToString();
-                    }
-                }
-                nameMenu.Label(wrongName, Raylib.RED);
-                Raylib.EndDrawing();
             }
         }
         private Race AskRace()
@@ -172,31 +188,34 @@ namespace Rogue
             MultipleChoiceEntry raceChoice = new MultipleChoiceEntry(choices);
             while (true)
             {
-                if (Raylib.WindowShouldClose())
+                if (!Raylib.WindowShouldClose())
+                {
+                    Raylib.BeginDrawing();
+                    Raylib.ClearBackground(Raylib.BLACK);
+                    MenuCreator raceMenu = new MenuCreator(50, Raylib.GetScreenHeight() / 3, 45, 400, 1, 0, game_font);
+                    raceMenu.Label("Please select your race.", Raylib.YELLOW);
+                    raceMenu.ToggleGroup(raceChoice);
+                    if (RayGui.GuiButton(new Rectangle(50, Raylib.GetScreenHeight() / 3 + 300, 300, 45), "Confirm") == 1)
+                    {
+                        switch (raceChoice.ToString())
+                        {
+                            case "Human":
+                                return Race.Human;
+                            case "Elf":
+                                return Race.Elf;
+                            case "Goblin":
+                                return Race.Goblin;
+                            default:
+                                Console.WriteLine("Something went wrong...");
+                                return Race.Human;
+                        }
+                    }
+                    Raylib.EndDrawing();
+                }
+                else
                 {
                     Raylib.CloseWindow();
                 }
-                Raylib.BeginDrawing();
-                Raylib.ClearBackground(Raylib.BLACK);
-                MenuCreator raceMenu = new MenuCreator(50, Raylib.GetScreenHeight() / 3, 45, 400, 1, 0, game_font);
-                raceMenu.Label("Please select your race.", Raylib.YELLOW);
-                raceMenu.ToggleGroup(raceChoice);
-                if (RayGui.GuiButton(new Rectangle(50, Raylib.GetScreenHeight() / 3 + 300, 300, 45), "Confirm") == 1)
-                {
-                    switch (raceChoice.ToString())
-                    {
-                        case "Human":
-                            return Race.Human;
-                        case "Elf":
-                            return Race.Elf;
-                        case "Goblin":
-                            return Race.Goblin;
-                        default:
-                            Console.WriteLine("Something went wrong...");
-                            return Race.Human;
-                    }
-                }
-                Raylib.EndDrawing();
             }
         }
         private Class AskClass()
@@ -205,31 +224,39 @@ namespace Rogue
             MultipleChoiceEntry classChoice = new MultipleChoiceEntry(choices);
             while (true)
             {
-                if (Raylib.WindowShouldClose())
+                if (!Raylib.WindowShouldClose())
+                {
+                    if (Raylib.WindowShouldClose())
+                    {
+                        Raylib.CloseWindow();
+                    }
+                    Raylib.BeginDrawing();
+                    Raylib.ClearBackground(Raylib.BLACK);
+                    MenuCreator classMenu = new MenuCreator(50, Raylib.GetScreenHeight() / 3, 45, 400, 1, 0, game_font);
+                    classMenu.Label("Please select your class.", Raylib.YELLOW);
+                    classMenu.ToggleGroup(classChoice);
+                    DrawClassImage(classChoice.ToString());
+                    if (RayGui.GuiButton(new Rectangle(50, Raylib.GetScreenHeight() / 3 + 250, 300, 45), "Confirm") == 1)
+                    {
+                        switch (classChoice.ToString())
+                        {
+                            case "Knight":
+                                return Class.Knight;
+                            case "Archer":
+                                return Class.Archer;
+                            case "Mage":
+                                return Class.Mage;
+                            default:
+                                Console.WriteLine("Something went wrong...");
+                                return Class.Mage;
+                        }
+                    }
+                    Raylib.EndDrawing();
+                }
+                else
                 {
                     Raylib.CloseWindow();
                 }
-                Raylib.BeginDrawing();
-                Raylib.ClearBackground(Raylib.BLACK);
-                MenuCreator classMenu = new MenuCreator(50, Raylib.GetScreenHeight() / 3, 45, 400, 1, 0, game_font);
-                classMenu.Label("Please select your class.", Raylib.YELLOW);
-                classMenu.ToggleGroup(classChoice);
-                if (RayGui.GuiButton(new Rectangle(50, Raylib.GetScreenHeight() / 3 + 250, 300, 45), "Confirm") == 1)
-                {
-                    switch (classChoice.ToString())
-                    {
-                        case "Knight":
-                            return Class.Knight;
-                        case "Archer":
-                            return Class.Archer;
-                        case "Mage":
-                            return Class.Mage;
-                        default:
-                            Console.WriteLine("Something went wrong...");
-                            return Class.Mage;
-                    }
-                }
-                Raylib.EndDrawing();
             }
         }
         private void ClassTexture()
@@ -371,6 +398,7 @@ namespace Rogue
             Rectangle destination = new Rectangle((draw_width - (float)game_width * scale) * 0.5f, (draw_height - (float)game_height * scale) * 0.5f, game_width * scale, game_height * scale);
 
             Raylib.DrawTexturePro(game_screen.texture, source, destination, new Vector2(0,0), 0.0f, Raylib.WHITE);
+            DrawPauseMenuButton();
             Raylib.EndDrawing();
         }
         private void PlayerMovement()
@@ -433,15 +461,52 @@ namespace Rogue
 
             if (c.Button("Options"))
             {
-                // Go to options somehow
+                currentGameState = GameState.OptionsMenu;
             }
 
             if (c.Button("Quit"))
             {
-                // Quit the game
+                Raylib.CloseWindow();
+                Environment.Exit(0);
             }
 
             Raylib.EndDrawing();
+        }
+        private void OnOptionsBackButtonPressed(object sender, EventArgs args)
+        {
+            currentGameState = GameState.MainMenu;
+        }
+        private void DrawPauseMenuButton()
+        {
+            if (RayGui.GuiButton(new Rectangle(Raylib.GetScreenWidth() - 270, Raylib.GetScreenHeight() - 80, 270, 80), "Pause Menu") == 1)
+            {
+                currentGameState = GameState.PauseMenu;
+            }
+        }
+        private void DrawClassImage(string playerClass)
+        {
+            Vector2 position;
+            switch (playerClass)
+            {
+                case "Knight":
+                    position = new Vector2(0, 8);
+                    break;
+                case "Archer":
+                    position = new Vector2(1, 7);
+                    break;
+                case "Mage":
+                    position = new Vector2(0, 7);
+                    break;
+                default:
+                    position = new Vector2(0, 0);
+                    break;
+            }
+            int index = (int)position.X + (int)position.Y * imagesPerRow;
+            int imagePixelX = (index % imagesPerRow) * Game.tileSize;
+            int imagePixelY = (index / imagesPerRow) * Game.tileSize;
+
+            Rectangle imageRect = new Rectangle(imagePixelX, imagePixelY, Game.tileSize, Game.tileSize);
+            Raylib.DrawTexturePro(mapImage, imageRect, new Rectangle(Raylib.GetScreenWidth() / 3 + 50, Raylib.GetScreenHeight() / 2 - 50, 100, 100), Vector2.Zero, 0, Raylib.WHITE);
         }
         private static void ShowMoney(int money)
         {
