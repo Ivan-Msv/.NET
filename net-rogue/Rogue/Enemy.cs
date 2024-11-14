@@ -9,17 +9,31 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace Rogue
 {
-    class Enemy
+    public class Enemy
     {
         public string name;
         public Vector2 position;
+        public int index;
         int imagePixelX;
         int imagePixelY;
         Texture image;
-        public Enemy(string name, Vector2 position)
+        public Enemy(string name, Vector2 position, int index)
         {
             this.name = name;
+            this.index = index;
             this.position = position;
+        }
+
+        public Enemy(Enemy copyFrom)
+        {
+            this.name = copyFrom.name;
+            this.position = copyFrom.position;
+            this.index = copyFrom.index;
+        }
+
+        public override string ToString()
+        {
+            return $"{name} — ID ( {index} ) — Position ( {position.X}, {position.Y} )";
         }
 
         public void Draw()
@@ -28,7 +42,7 @@ namespace Rogue
             Raylib.DrawTextureRec(image, imageRect, position * Game.tileSize, Raylib.WHITE);
         }
 
-        public void SetEnemyImageAndIndex(Texture atlasImage, int imagesPerRow, int index)
+        public void SetEnemyImageAndIndex(Texture atlasImage, int imagesPerRow)
         {
             index--;
             image = atlasImage;

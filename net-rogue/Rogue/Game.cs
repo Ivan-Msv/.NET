@@ -292,15 +292,7 @@ namespace Rogue
         {
             foreach (var enemy in level01.enemies)
             {
-                switch (enemy.name.ToLower())
-                {
-                    case "thief":
-                        enemy.SetEnemyImageAndIndex(mapImage, imagesPerRow, (int)MapTile.Thief);
-                        break;
-                    case "troll":
-                        enemy.SetEnemyImageAndIndex(mapImage, imagesPerRow, (int)MapTile.Troll);
-                        break;
-                }
+                enemy.SetEnemyImageAndIndex(mapImage, imagesPerRow);
             }
             foreach (var item in level01.items)
             {

@@ -1,0 +1,312 @@
+{
+  "format": 1,
+  "restore": {
+    "C:\\Users\\DaW0LF\\Desktop\\.NET\\net-rogue\\EnemyEditor\\EnemyEditor.csproj": {}
+  },
+  "projects": {
+    "C:\\Users\\DaW0LF\\Desktop\\.NET\\net-rogue\\EnemyEditor\\EnemyEditor.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\DaW0LF\\Desktop\\.NET\\net-rogue\\EnemyEditor\\EnemyEditor.csproj",
+        "projectName": "EnemyEditor",
+        "projectPath": "C:\\Users\\DaW0LF\\Desktop\\.NET\\net-rogue\\EnemyEditor\\EnemyEditor.csproj",
+        "packagesPath": "C:\\Users\\DaW0LF\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\DaW0LF\\Desktop\\.NET\\net-rogue\\EnemyEditor\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\DaW0LF\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0-windows"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0-windows7.0": {
+            "targetAlias": "net8.0-windows",
+            "projectReferences": {
+              "C:\\Users\\DaW0LF\\Desktop\\.NET\\net-rogue\\Rogue\\Rogue.csproj": {
+                "projectPath": "C:\\Users\\DaW0LF\\Desktop\\.NET\\net-rogue\\Rogue\\Rogue.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        }
+      },
+      "frameworks": {
+        "net8.0-windows7.0": {
+          "targetAlias": "net8.0-windows",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            },
+            "Microsoft.WindowsDesktop.App.WPF": {
+              "privateAssets": "none"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.100-preview.1.24101.2/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\Users\\DaW0LF\\Desktop\\.NET\\net-rogue\\RayGuiCreator\\RayGuiCreator\\RayGuiCreator.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\DaW0LF\\Desktop\\.NET\\net-rogue\\RayGuiCreator\\RayGuiCreator\\RayGuiCreator.csproj",
+        "projectName": "RayGuiCreator",
+        "projectPath": "C:\\Users\\DaW0LF\\Desktop\\.NET\\net-rogue\\RayGuiCreator\\RayGuiCreator\\RayGuiCreator.csproj",
+        "packagesPath": "C:\\Users\\DaW0LF\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\DaW0LF\\Desktop\\.NET\\net-rogue\\RayGuiCreator\\RayGuiCreator\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\DaW0LF\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net6.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net6.0": {
+            "targetAlias": "net6.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        }
+      },
+      "frameworks": {
+        "net6.0": {
+          "targetAlias": "net6.0",
+          "dependencies": {
+            "Raylib-CSharp-Vinculum": {
+              "target": "Package",
+              "version": "[5.0.1, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[6.0.26, 6.0.26]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Ref",
+              "version": "[6.0.26, 6.0.26]"
+            },
+            {
+              "name": "Microsoft.WindowsDesktop.App.Ref",
+              "version": "[6.0.26, 6.0.26]"
+            }
+          ],
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.100-preview.1.24101.2\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\Users\\DaW0LF\\Desktop\\.NET\\net-rogue\\Rogue\\Rogue.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\DaW0LF\\Desktop\\.NET\\net-rogue\\Rogue\\Rogue.csproj",
+        "projectName": "Rogue",
+        "projectPath": "C:\\Users\\DaW0LF\\Desktop\\.NET\\net-rogue\\Rogue\\Rogue.csproj",
+        "packagesPath": "C:\\Users\\DaW0LF\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\DaW0LF\\Desktop\\.NET\\net-rogue\\Rogue\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\DaW0LF\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {
+              "C:\\Users\\DaW0LF\\Desktop\\.NET\\net-rogue\\RayGuiCreator\\RayGuiCreator\\RayGuiCreator.csproj": {
+                "projectPath": "C:\\Users\\DaW0LF\\Desktop\\.NET\\net-rogue\\RayGuiCreator\\RayGuiCreator\\RayGuiCreator.csproj"
+              },
+              "C:\\Users\\DaW0LF\\Desktop\\.NET\\net-rogue\\TurboMapReader\\TurboMapReader.csproj": {
+                "projectPath": "C:\\Users\\DaW0LF\\Desktop\\.NET\\net-rogue\\TurboMapReader\\TurboMapReader.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        }
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "Newtonsoft.Json": {
+              "target": "Package",
+              "version": "[13.0.3, )"
+            },
+            "Raylib-CSharp-Vinculum": {
+              "target": "Package",
+              "version": "[5.0.1, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.100-preview.1.24101.2/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\Users\\DaW0LF\\Desktop\\.NET\\net-rogue\\TurboMapReader\\TurboMapReader.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\DaW0LF\\Desktop\\.NET\\net-rogue\\TurboMapReader\\TurboMapReader.csproj",
+        "projectName": "TurboMapReader",
+        "projectPath": "C:\\Users\\DaW0LF\\Desktop\\.NET\\net-rogue\\TurboMapReader\\TurboMapReader.csproj",
+        "packagesPath": "C:\\Users\\DaW0LF\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\DaW0LF\\Desktop\\.NET\\net-rogue\\TurboMapReader\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\DaW0LF\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net6.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net6.0": {
+            "targetAlias": "net6.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        }
+      },
+      "frameworks": {
+        "net6.0": {
+          "targetAlias": "net6.0",
+          "dependencies": {
+            "Newtonsoft.Json": {
+              "target": "Package",
+              "version": "[13.0.3, )"
+            },
+            "System.Xml.XmlSerializer": {
+              "target": "Package",
+              "version": "[4.3.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[6.0.26, 6.0.26]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Ref",
+              "version": "[6.0.26, 6.0.26]"
+            },
+            {
+              "name": "Microsoft.WindowsDesktop.App.Ref",
+              "version": "[6.0.26, 6.0.26]"
+            }
+          ],
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.100-preview.1.24101.2\\RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}

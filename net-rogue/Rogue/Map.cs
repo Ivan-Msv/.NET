@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 using System.Numerics;
 using ZeroElectric.Vinculum;
 using TurboMapReader;
+using System.IO;
+using System.Diagnostics;
+using Newtonsoft.Json;
 
 namespace Rogue
 {
@@ -31,6 +34,7 @@ namespace Rogue
         public MapLayer[] layers { get; set; }
         public int[] mapTiles;
         public TiledMap tileMap { get; private set; }
+        public Enemy[] enemyTypes;
 
         public List<Enemy> enemies;
         public List<Item> items;
@@ -90,10 +94,10 @@ namespace Rogue
                         case 0:
                             break;
                         case (int)MapTile.Thief:
-                            enemies.Add(new Enemy("Thief", enemyPosition));
+                            enemies.Add(new Enemy("Thief", enemyPosition, (int)MapTile.Thief));
                             break;
                         case (int)MapTile.Troll:
-                            enemies.Add(new Enemy("Troll", enemyPosition));
+                            enemies.Add(new Enemy("Troll", enemyPosition, (int)MapTile.Troll));
                             break;
                     }
                     switch (itemTileId)
@@ -109,6 +113,49 @@ namespace Rogue
                     }
                 }
             }
+        }
+
+        private void LoadEnemies()
+        {
+
+        }
+
+        public void LoadEnemyTypes(string fileName)
+        {
+            //Tarkista että tiedosto on olemassa.
+            if (File.Exists(fileName))
+            {
+                string fileContents;
+                try
+                {
+                    using (StreamReader enemyReader = new StreamReader(fileName))
+                    {
+                        fileContents = enemyReader.ReadToEnd();
+                    }
+
+                    Enemy[] deserializedContent = JsonConvert.DeserializeObject<Enemy[]>(fileContents);
+                    //Muutta sisältö Enemy[] muotoon
+                    enemyTypes = deserializedContent;
+                }
+                catch (FileNotFoundException e)
+                {
+                    Console.WriteLine("Error message: " + e.Message);
+                }
+            }
+        }
+        private Enemy GetEnemyBySpriteID(int spriteID)
+        {
+            foreach (Enemy template in enemyTypes)
+            {
+                // Onko tällä enemyllä sama spriteId kuin mitä on saatiin parametrina
+                if (template.index == spriteID)
+                {
+                    return new Enemy(template);
+                }
+            }
+            // TODO: Jos sopivaa ei löytyny, näytä virheilmoitus ja luo testivihollinen
+            Console.WriteLine($"Error, no enemy found with id: {spriteID}");
+            return new Enemy("testEnemy", new Vector2(0, 0), spriteID);
         }
         public Enemy GetEnemyAt(Vector2 pos)
         {
