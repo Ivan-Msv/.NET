@@ -20,7 +20,43 @@ namespace EnemyEditor
             InitializeComponent();
         }
 
+        private void ButtonLoadFromJson_Click(object sender, RoutedEventArgs e)
+        {
+            var dialog = new Microsoft.Win32.OpenFileDialog();
+            dialog.FileName = "enemies"; // Default file name
+            dialog.DefaultExt = ".json"; // Default file extension
+            dialog.InitialDirectory = Path.GetFullPath("data");
+            dialog.Filter = "Json documents (.json)|*.json"; // Filter files by extension
 
+            bool? result = dialog.ShowDialog();
+
+            if (result == false)
+            {
+                return;
+            }
+
+            string fileName = dialog.FileName;
+
+            string fileContents;
+            using (StreamReader reader = new StreamReader(fileName))
+            {
+                fileContents = reader.ReadToEnd();
+            }
+
+            try
+            {
+                List<Enemy> enemies = JsonConvert.DeserializeObject<List<Enemy>>(fileContents);
+
+                foreach (var enemy in enemies)
+                {
+                    EnemyList.Items.Add(enemy);
+                }
+            }
+            catch
+            {
+                ErrorLabel.Content = "Cannot deserialize given Json object.";
+            }
+        }
         private void ButtonSaveToJSON_Click(object sender, RoutedEventArgs e)
         {
             bool canBeSaved = CheckValues();

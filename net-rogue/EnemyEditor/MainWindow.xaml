@@ -24,7 +24,7 @@
         </Grid.ColumnDefinitions>
 
         <Label FontSize="18" Foreground="White">Enemies</Label>
-        <Label x:Name="ErrorLabel" FontSize="18" Foreground="Red" Grid.Row="3"></Label>
+        <Label x:Name="ErrorLabel" FontSize="17" Foreground="Red" Grid.Row="3"></Label>
         <ListBox Grid.Row="1" x:Name="EnemyList" Background="#FF212121" Foreground="White" FontSize="14">
         </ListBox>
         <Label Grid.Column="1" FontSize="18" Foreground="White">Information</Label>
@@ -38,7 +38,10 @@
                 <TextBox x:Name="PositionX" Height="25" Width="30" HorizontalAlignment="Left" FontSize="14" Margin="5,0,0,0" Background="#FF4C4C4C" Foreground="White"/>
                 <TextBox x:Name="PositionY" Height="25" Width="30" HorizontalAlignment="Left" FontSize="14" Margin="5,0,0,0" Background="#FF4C4C4C" Foreground="White"/>
             </StackPanel>
-            <Button x:Name="SaveToJsonButton" Click="ButtonSaveToJSON_Click" Margin="5,5,0,0" HorizontalAlignment="Left" Height="38" Width="90">Save to JSON</Button>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                <Button x:Name="SaveToJsonButton" Click="ButtonSaveToJSON_Click" Margin="5,5,0,0" HorizontalAlignment="Left" Height="38" Width="90">Save to JSON</Button>
+                <Button x:Name="LoadFromJsonButton" Click="ButtonLoadFromJson_Click" Margin="5,5,0,0" Height="38" Width="90" Content="Load from JSON" HorizontalAlignment="Left"/>
+            </StackPanel>
         </StackPanel>
     </Grid>
 </Window>

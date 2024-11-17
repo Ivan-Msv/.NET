@@ -1,5 +1,3 @@
-C:\Users\DaW0LF\Desktop\.NET\net-rogue\EnemyEditor\bin\Debug\net8.0-windows\Rogue.deps.json
-C:\Users\DaW0LF\Desktop\.NET\net-rogue\EnemyEditor\bin\Debug\net8.0-windows\Rogue.runtimeconfig.json
 C:\Users\DaW0LF\Desktop\.NET\net-rogue\EnemyEditor\bin\Debug\net8.0-windows\data\audio\defeated_troll.wav
 C:\Users\DaW0LF\Desktop\.NET\net-rogue\EnemyEditor\bin\Debug\net8.0-windows\data\audio\item_pickup.wav
 C:\Users\DaW0LF\Desktop\.NET\net-rogue\EnemyEditor\bin\Debug\net8.0-windows\data\audio\thief_laugh.mp3
@@ -10,6 +8,8 @@ C:\Users\DaW0LF\Desktop\.NET\net-rogue\EnemyEditor\bin\Debug\net8.0-windows\Maps
 C:\Users\DaW0LF\Desktop\.NET\net-rogue\EnemyEditor\bin\Debug\net8.0-windows\Maps\RogueTiled.tmj
 C:\Users\DaW0LF\Desktop\.NET\net-rogue\EnemyEditor\bin\Debug\net8.0-windows\Maps\Tileset1.tsj
 C:\Users\DaW0LF\Desktop\.NET\net-rogue\EnemyEditor\bin\Debug\net8.0-windows\Maps\Tileset1.tsx
+C:\Users\DaW0LF\Desktop\.NET\net-rogue\EnemyEditor\bin\Debug\net8.0-windows\Rogue.deps.json
+C:\Users\DaW0LF\Desktop\.NET\net-rogue\EnemyEditor\bin\Debug\net8.0-windows\Rogue.runtimeconfig.json
 C:\Users\DaW0LF\Desktop\.NET\net-rogue\EnemyEditor\bin\Debug\net8.0-windows\Rogue.exe
 C:\Users\DaW0LF\Desktop\.NET\net-rogue\EnemyEditor\bin\Debug\net8.0-windows\EnemyEditor.exe
 C:\Users\DaW0LF\Desktop\.NET\net-rogue\EnemyEditor\bin\Debug\net8.0-windows\data\images\tilemap.png

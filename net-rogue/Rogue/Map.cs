@@ -34,7 +34,7 @@ namespace Rogue
         public MapLayer[] layers { get; set; }
         public int[] mapTiles;
         public TiledMap tileMap { get; private set; }
-        public Enemy[] enemyTypes;
+        public List<Enemy> enemyTypes;
 
         public List<Enemy> enemies;
         public List<Item> items;
@@ -89,17 +89,20 @@ namespace Rogue
                     int index = x + y * enemyLayer.width;
                     int enemyTileId = enemyTiles[index];
                     int itemTileId = itemTiles[index];
-                    switch(enemyTileId)
-                    {
-                        case 0:
-                            break;
-                        case (int)MapTile.Thief:
-                            enemies.Add(new Enemy("Thief", enemyPosition, (int)MapTile.Thief));
-                            break;
-                        case (int)MapTile.Troll:
-                            enemies.Add(new Enemy("Troll", enemyPosition, (int)MapTile.Troll));
-                            break;
-                    }
+
+                    var newEnemy = GetEnemyBySpriteID(enemyTileId);
+
+                    //switch(enemyTileId)
+                    //{
+                    //    case 0:
+                    //        break;
+                    //    case (int)MapTile.Thief:
+                    //        enemies.Add(new Enemy("Thief", enemyPosition, (int)MapTile.Thief));
+                    //        break;
+                    //    case (int)MapTile.Troll:
+                    //        enemies.Add(new Enemy("Troll", enemyPosition, (int)MapTile.Troll));
+                    //        break;
+                    //}
                     switch (itemTileId)
                     {
                         case 0:
@@ -133,8 +136,7 @@ namespace Rogue
                         fileContents = enemyReader.ReadToEnd();
                     }
 
-                    Enemy[] deserializedContent = JsonConvert.DeserializeObject<Enemy[]>(fileContents);
-                    //Muutta sisältö Enemy[] muotoon
+                    List<Enemy> deserializedContent = JsonConvert.DeserializeObject<List<Enemy>>(fileContents);
                     enemyTypes = deserializedContent;
                 }
                 catch (FileNotFoundException e)
