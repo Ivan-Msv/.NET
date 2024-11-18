@@ -18,6 +18,9 @@ namespace Rogue
     {
         MainMenu, GameLoop, CharacterCreation, OptionsMenu, PauseMenu
     }
+    /// <summary>
+    /// Vastaa pelin ydintoiminnasta, sisältää päivitykset ja renderöinnin.
+    /// </summary>
     class Game
     {
         PlayerCharacter player;
@@ -159,6 +162,10 @@ namespace Rogue
             EnemyAndItemTexture();
             return player;
         }
+        /// <summary>
+        /// Kysyy pelaajan nimen.
+        /// Sisältää tarkistuksen, onko nimi tarpeeksi pitkä, onko nimi tyhjä tai liian lyhyt, sisältääkö nimi numeroita.
+        /// </summary>
         private string AskName()
         {
             TextBoxEntry nameEntry = new TextBoxEntry(10);
@@ -196,6 +203,10 @@ namespace Rogue
                 }
             }
         }
+        /// <summary>
+        /// Kysyy pelaajan rodun.
+        /// Kolme rotu valintaa, mahdollisuus lisätä enemmän.
+        /// </summary>
         private Race AskRace()
         {
             string[] choices = ["Human", "Elf", "Goblin"];
@@ -273,6 +284,9 @@ namespace Rogue
                 }
             }
         }
+        /// <summary>
+        /// Asettaa pelaaja spriten sen luokan perusteella
+        /// </summary>
         private void ClassTexture()
         {
             switch (player.pClass)

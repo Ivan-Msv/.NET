@@ -9,6 +9,9 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace Rogue
 {
+    /// <summary>
+    /// Vihollisen luokka pelissä, joka kertoo sen nimen, sijainnin ja kuva-tunnisteen.
+    /// </summary>
     public class Enemy
     {
         public string name;

@@ -43,7 +43,12 @@ namespace Rogue
         {
             this.tileMap = map;
         }
-
+        /// <summary>
+        /// Piirtää kartan annetulla spriteillä
+        /// Tämä metodi lukee kartan ja renderöi ne näytölle ID:n mukaan
+        /// </summary>
+        /// <param name="image">Kuva, joka sisältää spritet</param>
+        /// <param name="imagesPerRow">Yksittäisten spriten määrät jokasen rivin kuvassa</param>
         public void Draw(Texture image, int imagesPerRow)
         {
             TurboMapReader.MapLayer tileGround = tileMap.layers[0];
@@ -92,7 +97,6 @@ namespace Rogue
                     int enemyTileId = enemyTiles[index];
                     int itemTileId = itemTiles[index];
 
-                    Console.WriteLine(enemyTileId);
                     if (enemyTileId > 0)
                     {
                         var newEnemy = GetEnemyBySpriteID(enemyTileId);
@@ -102,17 +106,6 @@ namespace Rogue
                         enemies.Add(newEnemy);
                     }
 
-                    //switch(enemyTileId)
-                    //{
-                    //    case 0:
-                    //        break;
-                    //    case (int)MapTile.Thief:
-                    //        enemies.Add(new Enemy("Thief", enemyPosition, (int)MapTile.Thief));
-                    //        break;
-                    //    case (int)MapTile.Troll:
-                    //        enemies.Add(new Enemy("Troll", enemyPosition, (int)MapTile.Troll));
-                    //        break;
-                    //}
                     switch (itemTileId)
                     {
                         case 0:
@@ -127,7 +120,10 @@ namespace Rogue
                 }
             }
         }
-
+        /// <summary>
+        /// Lataa kaikki olemassa olevat vihollismallit
+        /// </summary>
+        /// <param name="fileName">Json tiedoston nimi</param>
         public void LoadEnemyTypes(string fileName)
         {
             enemyTypes = new List<Enemy>();
@@ -151,6 +147,10 @@ namespace Rogue
                 }
             }
         }
+        /// <summary>
+        /// Käy joka ikisen mallin läpi, ja jos vihollinenmalli löytyy, niin luo uusi vihollinen
+        /// </summary>
+        /// <param name="spriteID">Sprite kuvan ID</param>
         private Enemy GetEnemyBySpriteID(int spriteID)
         {
             foreach (Enemy template in enemyTypes)
