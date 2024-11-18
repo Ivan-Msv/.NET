@@ -23,10 +23,10 @@ namespace EnemyEditor
         private void ButtonLoadFromJson_Click(object sender, RoutedEventArgs e)
         {
             var dialog = new Microsoft.Win32.OpenFileDialog();
-            dialog.FileName = "enemies"; // Default file name
-            dialog.DefaultExt = ".json"; // Default file extension
-            dialog.InitialDirectory = Path.GetFullPath("data");
-            dialog.Filter = "Json documents (.json)|*.json"; // Filter files by extension
+            dialog.FileName = "enemies"; // Oletus nimi
+            dialog.DefaultExt = ".json"; // Oletus pääte
+            dialog.InitialDirectory = Path.GetFullPath("data"); // Oletus kansio
+            dialog.Filter = "Json documents (.json)|*.json"; // Suodattaa turhat tiedostot
 
             bool? result = dialog.ShowDialog();
 
@@ -61,10 +61,10 @@ namespace EnemyEditor
         private void ButtonSaveToJSON_Click(object sender, RoutedEventArgs e)
         {
             var dialog = new Microsoft.Win32.SaveFileDialog();
-            dialog.FileName = "enemies"; // Default file name
-            dialog.DefaultExt = ".json"; // Default file extension
-            dialog.InitialDirectory = Path.GetFullPath("data");
-            dialog.Filter = "Json documents (.json)|*.json"; // Filter files by extension
+            dialog.FileName = "enemies"; // Oletus nimi
+            dialog.DefaultExt = ".json"; // Oletus pääte
+            dialog.InitialDirectory = Path.GetFullPath("data"); // Oletus kansio
+            dialog.Filter = "Json documents (.json)|*.json"; // Suodattaa turhat tiedostot
 
             bool? result = dialog.ShowDialog();
 
@@ -114,7 +114,8 @@ namespace EnemyEditor
             {
                 return;
             }
-
+            
+            // Poistaa vihollisen
             EnemyList.Items.Remove(EnemyList.SelectedItem);
             ErrorLabel.Content = "Successfully removed enemy";
         }
@@ -156,6 +157,7 @@ namespace EnemyEditor
         private bool CheckSelection()
         {
             ErrorLabel.Foreground = Brushes.Red;
+            // Jos vihollinen ei ole valittu
             if (EnemyList.SelectedItem == null)
             {
                 ErrorLabel.Content = "Select an enemy first.";
