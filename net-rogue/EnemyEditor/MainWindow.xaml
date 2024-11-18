@@ -33,12 +33,12 @@
             <TextBox x:Name="EnemyName" Height="25" Width="185" HorizontalAlignment="Left" FontSize="14" Margin="5,0,0,0" Background="#FF4C4C4C" Foreground="White"/>
             <TextBlock x:Name="SpriteIdText" FontSize="15" Margin="5,5,0,5" Foreground="White">Sprite ID</TextBlock>
             <TextBox x:Name="SpriteId" Height="25" Width="40" HorizontalAlignment="Left" FontSize="14" Margin="5,0,0,0" Background="#FF4C4C4C" Foreground="White"/>
-            <TextBlock x:Name="PositionText" FontSize="15" Margin="5,5,0,5" Foreground="White">Position (X, Y)</TextBlock>
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
-                <TextBox x:Name="PositionX" Height="25" Width="30" HorizontalAlignment="Left" FontSize="14" Margin="5,0,0,0" Background="#FF4C4C4C" Foreground="White"/>
-                <TextBox x:Name="PositionY" Height="25" Width="30" HorizontalAlignment="Left" FontSize="14" Margin="5,0,0,0" Background="#FF4C4C4C" Foreground="White"/>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left"/>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,0,0,0">
+                <Button x:Name="AddToEnemyList" Click="AddToEnemyList_Click" Margin="5,5,0,0" HorizontalAlignment="Left" Height="42" Width="90">Add Enemy</Button>
+                <Button x:Name="RemoveEnemy" Click="RemoveEnemy_Click" Margin="5,5,0,0" HorizontalAlignment="Left" Height="42" Width="90">Remove Enemy</Button>
             </StackPanel>
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,50,0,0">
                 <Button x:Name="SaveToJsonButton" Click="ButtonSaveToJSON_Click" Margin="5,5,0,0" HorizontalAlignment="Left" Height="38" Width="90">Save to JSON</Button>
                 <Button x:Name="LoadFromJsonButton" Click="ButtonLoadFromJson_Click" Margin="5,5,0,0" Height="38" Width="90" Content="Load from JSON" HorizontalAlignment="Left"/>
             </StackPanel>

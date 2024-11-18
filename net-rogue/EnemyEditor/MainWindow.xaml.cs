@@ -51,6 +51,7 @@ namespace EnemyEditor
                 {
                     EnemyList.Items.Add(enemy);
                 }
+                ErrorLabel.Content = "Loaded from Json.";
             }
             catch
             {
@@ -59,12 +60,20 @@ namespace EnemyEditor
         }
         private void ButtonSaveToJSON_Click(object sender, RoutedEventArgs e)
         {
-            bool canBeSaved = CheckValues();
+            var dialog = new Microsoft.Win32.SaveFileDialog();
+            dialog.FileName = "enemies"; // Default file name
+            dialog.DefaultExt = ".json"; // Default file extension
+            dialog.InitialDirectory = Path.GetFullPath("data");
+            dialog.Filter = "Json documents (.json)|*.json"; // Filter files by extension
 
-            if (!canBeSaved)
+            bool? result = dialog.ShowDialog();
+
+            if (result == false)
             {
                 return;
             }
+
+            string fileName = dialog.FileName;
 
             int enemyCount = EnemyList.Items.Count;
             Enemy[] enemies = new Enemy[enemyCount];
@@ -76,19 +85,38 @@ namespace EnemyEditor
 
             string enemiesArrayJson = JsonConvert.SerializeObject(enemies);
 
-            using (StreamWriter enemyWriter = new StreamWriter("data/enemies.json"))
+            using (StreamWriter enemyWriter = new StreamWriter(fileName))
             {
                 enemyWriter.Write(enemiesArrayJson);
+            }
+
+            ErrorLabel.Content = "Saved to Json.";
+        }
+        private void AddToEnemyList_Click(object sender, RoutedEventArgs e)
+        {
+            bool canBeSaved = CheckValues();
+
+            if (!canBeSaved)
+            {
+                return;
             }
 
             // Tyhjentää käyttäjän syötteet
             EnemyName.Clear();
             SpriteId.Clear();
-            PositionX.Clear();
-            PositionY.Clear();
 
             // Näyttää käyttäjälle, että kaikki onnistui
             ErrorLabel.Content = "Enemy saved!";
+        }
+        private void RemoveEnemy_Click(object sender, RoutedEventArgs e)
+        {
+            if (!CheckSelection())
+            {
+                return;
+            }
+
+            EnemyList.Items.Remove(EnemyList.SelectedItem);
+            ErrorLabel.Content = "Successfully removed enemy";
         }
         private bool CheckValues()
         {
@@ -106,12 +134,6 @@ namespace EnemyEditor
                 return false;
             }
 
-            if (string.IsNullOrEmpty(PositionX.Text) || string.IsNullOrEmpty(PositionY.Text))
-            {
-                ErrorLabel.Content = "Position can't be empty";
-                return false;
-            }
-
             // tarkista että arvot ovat numeroita
             if (!int.TryParse(SpriteId.Text, out _))
             {
@@ -119,21 +141,28 @@ namespace EnemyEditor
                 return false;
             }
 
-            if (!int.TryParse(PositionX.Text, out _) || !int.TryParse(PositionY.Text, out _))
-            {
-                ErrorLabel.Content = $"Position has to be a number";
-                return false;
-            }
-
             ErrorLabel.Foreground = Brushes.White;
 
             string name = EnemyName.Text;
-            Vector2 position = new Vector2(int.Parse(PositionX.Text), int.Parse(PositionY.Text));
+            Vector2 position = new Vector2(0, 0);
             int spriteIndex = int.Parse(SpriteId.Text);
 
             Enemy newEnemy = new Enemy(name, position, spriteIndex);
             EnemyList.Items.Add(newEnemy);
 
+            return true;
+        }
+
+        private bool CheckSelection()
+        {
+            ErrorLabel.Foreground = Brushes.Red;
+            if (EnemyList.SelectedItem == null)
+            {
+                ErrorLabel.Content = "Select an enemy first.";
+                return false;
+            }
+
+            ErrorLabel.Foreground = Brushes.White;
             return true;
         }
     }

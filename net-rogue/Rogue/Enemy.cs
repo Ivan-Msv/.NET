@@ -29,14 +29,11 @@ namespace Rogue
             this.position = copyFrom.position;
             this.index = copyFrom.index;
         }
-        // Jostain syystä json deserializer ei toiminu
-        // Niin googlen avulla löysin ratkaisun: tehdä tyhjän public classin
-        // https://stackoverflow.com/questions/31069962/newtonsoft-json-jsonserializationexception-unable-to-find-constructor-to-use-fo
         public Enemy() { }
 
         public override string ToString()
         {
-            return $"{name} — ID ( {index} ) — Position ( {position.X}, {position.Y} )";
+            return $"{name} — ID ( {index} )";
         }
 
         public void Draw()

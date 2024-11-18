@@ -16,12 +16,7 @@ namespace Rogue
                 Game rogue = new Game();
                 rogue.Run();
 
-                Console.WriteLine("Play again? Y/N");
-                if (Console.ReadKey(true).Key == ConsoleKey.N)
-                {
-                    again = false;
-                }
-                Console.Clear();
+                again = false;
             }
         }
     }

@@ -73,6 +73,8 @@ namespace Rogue
             enemies = new List<Enemy>();
             items = new List<Item>();
 
+            LoadEnemyTypes("data/enemies.json");
+
             TurboMapReader.MapLayer itemLayer = tileMap.layers[1];
             TurboMapReader.MapLayer enemyLayer = tileMap.layers[2];
 
@@ -90,7 +92,15 @@ namespace Rogue
                     int enemyTileId = enemyTiles[index];
                     int itemTileId = itemTiles[index];
 
-                    var newEnemy = GetEnemyBySpriteID(enemyTileId);
+                    Console.WriteLine(enemyTileId);
+                    if (enemyTileId > 0)
+                    {
+                        var newEnemy = GetEnemyBySpriteID(enemyTileId);
+                        Console.WriteLine(enemyPosition);
+                        newEnemy.position = enemyPosition;
+
+                        enemies.Add(newEnemy);
+                    }
 
                     //switch(enemyTileId)
                     //{
@@ -118,13 +128,9 @@ namespace Rogue
             }
         }
 
-        private void LoadEnemies()
-        {
-
-        }
-
         public void LoadEnemyTypes(string fileName)
         {
+            enemyTypes = new List<Enemy>();
             //Tarkista että tiedosto on olemassa.
             if (File.Exists(fileName))
             {
@@ -155,7 +161,7 @@ namespace Rogue
                     return new Enemy(template);
                 }
             }
-            // TODO: Jos sopivaa ei löytyny, näytä virheilmoitus ja luo testivihollinen
+            // Jos sopivaa ei löytyny, näytä virheilmoitus ja luo testivihollinen
             Console.WriteLine($"Error, no enemy found with id: {spriteID}");
             return new Enemy("testEnemy", new Vector2(0, 0), spriteID);
         }

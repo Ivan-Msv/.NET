@@ -329,8 +329,8 @@ namespace Rogue
 
             if (enemyScan != null)
             {
-                string name = enemyScan.name.ToLower();
-                if (name == "thief")
+                int index = enemyScan.index + 1;
+                if (index == (int)MapTile.Thief)
                 {
                     canMove = false;
                     text = $"You encounter a <{enemyScan.name}>.\nHe steals half of your money and runs away.\n[Enter to continue]";
@@ -344,7 +344,7 @@ namespace Rogue
                         canMove = true;
                     }
                 }
-                else if (name == "troll")
+                else if (index == (int)MapTile.Troll)
                 {
                     canMove = false;
                     text = $"You hit an enemy: <{enemyScan.name}>,\nHe dies rather quickly...\n[Enter to continue]";
