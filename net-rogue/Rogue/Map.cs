@@ -92,7 +92,6 @@ namespace Rogue
                     int enemyTileId = enemyTiles[index];
                     int itemTileId = itemTiles[index];
 
-                    Console.WriteLine(enemyTileId);
                     if (enemyTileId > 0)
                     {
                         var newEnemy = GetEnemyBySpriteID(enemyTileId);
